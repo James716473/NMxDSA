@@ -11,10 +11,10 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class App {
     public static void main(String[] args) {
-        Expression expr = new ExpressionBuilder("x^3 + 4x^2 - 10")
+        Expression expr = new ExpressionBuilder("x^3 - 4cos(x)")
                             .variable("x")
                             .build();
-        System.out.println(secant(expr, 1.2, 1.4));
+        System.out.println(falsePosition(expr, 1, 2));
     }
 
     public static double numericalDerivative(Expression expression, double x) {
@@ -66,20 +66,37 @@ public class App {
 
     public static double bisection(Expression expression, double xL, double xR){
         //base case:
+        double xM = (xL + xR) / 2;
         if(expression.setVariable("x", xL).evaluate() * expression.setVariable("x", xR).evaluate()> 0){
             System.out.println("xL and xR should have opposite signs");
+            return xM;
         }
-        double xM = (xL + xR) / 2;
+        
         double fxM = expression.setVariable("x", xM).evaluate();
 
         if(new BigDecimal(fxM).setScale(4, RoundingMode.HALF_UP).compareTo(BigDecimal.ZERO) == 0){
             return xM;
-        } else if (expression.setVariable("x", xL).evaluate() * xM < 0){
+        } else if (expression.setVariable("x", xL).evaluate() * fxM < 0){
             return bisection(expression, xL, xM);
         } else {
             return bisection(expression, xM, xR);
         }
 
+    }
+
+    public static double falsePosition(Expression expression, double xL, double xR){
+        if(expression.setVariable("x", xL).evaluate() * expression.setVariable("x", xR).evaluate()> 0){
+            System.out.println("xL and xR should have opposite signs");
+            return xL;
+        }
+        double nextX = xL + (((xR-xL) * (-1 * expression.setVariable("x", xL).evaluate())) / (expression.setVariable("x", xR).evaluate() - expression.setVariable("x", xL).evaluate()));
+        if(new BigDecimal(expression.setVariable("x", nextX).evaluate()).setScale(4, RoundingMode.HALF_UP).compareTo(BigDecimal.ZERO) == 0){
+            return nextX;
+        } else if (expression.setVariable("x", xL).evaluate() * expression.setVariable("x", nextX).evaluate() < 0){
+            return falsePosition(expression, xL, nextX);
+        } else {
+            return falsePosition(expression, nextX, xR);
+        }
     }
 
 

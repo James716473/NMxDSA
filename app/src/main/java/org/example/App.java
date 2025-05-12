@@ -17,7 +17,7 @@ public class App {
             "3x - y + z = 4",
             "2x + 3y + z = 3"
         };
-        System.out.println(cramer(equations));
+        System.out.println(Arrays.toString(cramer(equations)));
     }
 
     public static double numericalDerivative(Expression expression, double x) {
@@ -113,7 +113,7 @@ public class App {
     }
 
     //can only solve 3x3 matrix (x, y, z)
-    public static double cramer(String[] equations){
+    public static double[] cramer(String[] equations){
         double[][] matrix = new double[3][4];
         for(int i = 0; i < matrix.length; i++){
             String[] equation = parseEquation(equations[i]);
@@ -143,8 +143,21 @@ public class App {
         double d = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
                     - matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
                     + matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+        double dx = matrix[0][3] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
+                    - matrix[0][1] * (matrix[1][3] * matrix[2][2] - matrix[1][2] * matrix[2][3])
+                    + matrix[0][2] * (matrix[1][3] * matrix[2][1] - matrix[1][1] * matrix[2][3]);
+        double dy = matrix[0][0] * (matrix[1][3] * matrix[2][2] - matrix[1][2] * matrix[2][3])
+                    - matrix[0][3] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
+                    + matrix[0][2] * (matrix[1][0] * matrix[2][3] - matrix[1][3] * matrix[2][0]);
+        double dz = matrix[0][0] * (matrix[1][1] * matrix[2][3] - matrix[1][3] * matrix[2][1])
+                    - matrix[0][1] * (matrix[1][0] * matrix[2][3] - matrix[1][3] * matrix[2][0])
+                    + matrix[0][3] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
 
-        return d;
+        dx = dx / d;
+        dy = dy / d;
+        dz = dz / d;
+        double[] answer = {dx, dy, dz};
+        return answer;
     }
 
     public static String[] parseEquation(String equation){

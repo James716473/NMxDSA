@@ -11,10 +11,10 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class App {
     public static void main(String[] args) {
-        Expression expr = new ExpressionBuilder("2^x - 5x + 2")
+        Expression expr = new ExpressionBuilder("x^3 - x - 1")
                             .variable("x")
                             .build();
-        System.out.println(newtonRaphson(expr, 1));
+        System.out.println(secant(expr, 1.2, 1.4));
     }
 
     public static double numericalDerivative(Expression expression, double x) {
@@ -50,11 +50,19 @@ public class App {
         } else {
             return newtonRaphson(expression, nextX);
         } 
-
-
-
     }
 
+    public static double secant(Expression expression, double x0, double x1){
+        //base case:
+
+        double nextX = x1 - (expression.setVariable("x", x1).evaluate() * ((x1 - x0) / (expression.setVariable("x", x1).evaluate() - expression.setVariable("x", x0).evaluate())));
+
+        if(Math.abs(nextX - x1) <= 1e-4){
+            return nextX;
+        } else {
+            return secant(expression, x1, nextX);
+        }
+    }
 
 
     

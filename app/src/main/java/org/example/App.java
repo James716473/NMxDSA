@@ -5,16 +5,16 @@ package org.example;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class App {
     public static void main(String[] args) {
-        Expression expr = new ExpressionBuilder("x^3 - 4cos(x)")
-                            .variable("x")
-                            .build();
-        System.out.println(falsePosition(expr, 1, 2));
+        int[] a = {5, 6, 7, 8};
+        int[] b = {1, 2, 3, 4};
+        System.out.println(Arrays.deepToString(matrix(a, b)));
     }
 
     public static double numericalDerivative(Expression expression, double x) {
@@ -98,7 +98,16 @@ public class App {
             return falsePosition(expression, nextX, xR);
         }
     }
-
+    //only works for when matrix a and b is a one dimensional array
+    public static int[][] matrix(int[] a, int[] b){
+        int[][] ab = new int[a.length][b.length];
+        for(int i = 0; i < a.length; i++){
+            for(int j = 0; j < b.length; j++){
+                ab[i][j] = a[i] * b[j];
+            }
+        }
+        return ab;
+    }
 
     
 }

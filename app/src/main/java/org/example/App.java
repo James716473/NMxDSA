@@ -11,7 +11,7 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class App {
     public static void main(String[] args) {
-        Expression expr = new ExpressionBuilder("x^3 - x - 1")
+        Expression expr = new ExpressionBuilder("x^3 + 4x^2 - 10")
                             .variable("x")
                             .build();
         System.out.println(secant(expr, 1.2, 1.4));
@@ -62,6 +62,24 @@ public class App {
         } else {
             return secant(expression, x1, nextX);
         }
+    }
+
+    public static double bisection(Expression expression, double xL, double xR){
+        //base case:
+        if(expression.setVariable("x", xL).evaluate() * expression.setVariable("x", xR).evaluate()> 0){
+            System.out.println("xL and xR should have opposite signs");
+        }
+        double xM = (xL + xR) / 2;
+        double fxM = expression.setVariable("x", xM).evaluate();
+
+        if(new BigDecimal(fxM).setScale(4, RoundingMode.HALF_UP).compareTo(BigDecimal.ZERO) == 0){
+            return xM;
+        } else if (expression.setVariable("x", xL).evaluate() * xM < 0){
+            return bisection(expression, xL, xM);
+        } else {
+            return bisection(expression, xM, xR);
+        }
+
     }
 
 

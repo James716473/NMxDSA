@@ -13,12 +13,12 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 public class App {
     public static void main(String[] args) {
         String[] equations = {
-            "2x - y + 3z = 5",
-            "x + 4y - 2z = 1",
-            "3x + y + 5z = 2"
+            "-x + y + 7z = -6",
+            "4x - y - z = 3",
+            "-2x + 6y + z = 9"
         };
 
-        System.out.println(Arrays.toString(guassianElimination(equations)));
+        System.out.println(Arrays.toString(jacobi(parseEquation(equations))));
                                 
         
     }
@@ -116,33 +116,10 @@ public class App {
     }
 
     //can only solve 3x3 matrix (x, y, z)
-    public static double[] cramer(String[] equations){
-        double[][] matrix = new double[3][4];
-        for(int i = 0; i < matrix.length; i++){
-            String[] equation = parseEquation(equations[i]);
-            matrix[i][0] = new ExpressionBuilder(equation[0])
-                                .variables("x", "y", "z")
-                                .build()
-                                .setVariable("x", 1)
-                                .setVariable("y", 0)
-                                .setVariable("z", 0)
-                                .evaluate();
-            matrix[i][1] = new ExpressionBuilder(equation[0])
-                                .variables("x", "y", "z")
-                                .build()
-                                .setVariable("x", 0)
-                                .setVariable("y", 1)
-                                .setVariable("z", 0)
-                                .evaluate();
-            matrix[i][2] = new ExpressionBuilder(equation[0])
-                                .variables("x", "y", "z")
-                                .build()
-                                .setVariable("x", 0)
-                                .setVariable("y", 0)
-                                .setVariable("z", 1)
-                                .evaluate();
-            matrix[i][3] = Double.parseDouble(equation[1]);                  
-        }
+    //need muna iparse into matrix
+    public static double[] cramer(double[][] matrix){
+        
+        
         double d = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
                     - matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
                     + matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
@@ -163,34 +140,10 @@ public class App {
         return answer;
     }
 
-    public static double[] guassianElimination(String[] equations){
-        double[][] matrix = new double[3][4];
-        //dito magiging 0 pyramid or kung ano man tawag? idfk man
-        for(int i = 0; i < matrix.length; i++){
-            String[] equation = parseEquation(equations[i]);
-            matrix[i][0] = new ExpressionBuilder(equation[0])
-                                .variables("x", "y", "z")
-                                .build()
-                                .setVariable("x", 1)
-                                .setVariable("y", 0)
-                                .setVariable("z", 0)
-                                .evaluate();
-            matrix[i][1] = new ExpressionBuilder(equation[0])
-                                .variables("x", "y", "z")
-                                .build()
-                                .setVariable("x", 0)
-                                .setVariable("y", 1)
-                                .setVariable("z", 0)
-                                .evaluate();
-            matrix[i][2] = new ExpressionBuilder(equation[0])
-                                .variables("x", "y", "z")
-                                .build()
-                                .setVariable("x", 0)
-                                .setVariable("y", 0)
-                                .setVariable("z", 1)
-                                .evaluate();
-            matrix[i][3] = Double.parseDouble(equation[1]);                  
-        }
+    //dapat iparse muna as matrix
+    public static double[] guassianElimination(double[][] matrix){
+        
+        
         for(int i = 0; i < matrix.length; i++){
 
             for(int j = i + 1; j < matrix.length; j++){
@@ -212,6 +165,8 @@ public class App {
             
         }
 
+
+
         // Back Substitution
         double[] solution = new double[matrix.length];
         for (int i = matrix.length - 1; i >= 0; i--) {
@@ -224,13 +179,86 @@ public class App {
 
         return solution;
     }
+
+    //iparse muna as matrix
+    public static double[] jacobi(double[][] matrix){
+       
+        
+        //still cant wrap my head around this shit man
+        for (int i = 0; i < matrix.length; i++) {
+            int maxRow = i;
+            for (int j = i + 1; j < matrix.length; j++) {
+                if (Math.abs(matrix[j][i]) > Math.abs(matrix[maxRow][i])) {
+                    maxRow = j;
+                }
+            }
+
+            // Swap if a more dominant row is found
+            if (maxRow != i) {
+                double[] temp = matrix[i];
+                matrix[i] = matrix[maxRow];
+                matrix[maxRow] = temp;
+            }
+        }
+        
+        //insert initial guess
+        double[] initialGuess = {0, 0, 0};
+        
+        
+        return jacobiEvaluate(matrix, initialGuess);
+
+        
+
+    }
+
+    public static double[] jacobiEvaluate(double[][] matrix, double[] guess){
+        double nextGuess[] = new double[3];
+        nextGuess[0] = (guess[1] + guess[2] + matrix[0][3]) / matrix[0][0];
+        nextGuess[1] = (2 * guess[0] - guess[2] + matrix[1][3]) / matrix[1][1];
+        nextGuess[2] = (guess[0] - guess[1] + matrix[2][3]) / matrix[2][2];
+       
+        if(Math.abs(nextGuess[0] - guess[0]) < 1e-3 && Math.abs(nextGuess[1] - guess[1]) < 1e-3 && Math.abs(nextGuess[2] - guess[2]) < 1e-3){
+            return nextGuess;
+        } else {
+            
+            return jacobiEvaluate(matrix, nextGuess);
+        }
+    }
+
     
-    public static String[] parseEquation(String equation){
-        String[] parsedEquation = new String[2];
-        equation.indexOf('=');
-        parsedEquation[0] = equation.substring(0, equation.indexOf('=')).trim();
-        parsedEquation[1] = equation.substring(equation.indexOf('=') + 1, equation.length()).trim();
-        return parsedEquation;
+    
+    public static double[][] parseEquation(String[] equations){
+        double[][] matrix = new double[3][4];
+        for(int i = 0; i < equations.length; i++){
+            String[] parsedEquation = new String[2];
+            equations[i].indexOf('=');
+            parsedEquation[0] = equations[i].substring(0, equations[i].indexOf('=')).trim();
+            parsedEquation[1] = equations[i].substring(equations[i].indexOf('=') + 1, equations[i].length()).trim();
+            
+            matrix[i][0] = new ExpressionBuilder(parsedEquation[0])
+                                .variables("x", "y", "z")
+                                .build()
+                                .setVariable("x", 1)
+                                .setVariable("y", 0)
+                                .setVariable("z", 0)
+                                .evaluate();
+            matrix[i][1] = new ExpressionBuilder(parsedEquation[0])
+                                .variables("x", "y", "z")
+                                .build()
+                                .setVariable("x", 0)
+                                .setVariable("y", 1)
+                                .setVariable("z", 0)
+                                .evaluate();
+            matrix[i][2] = new ExpressionBuilder(parsedEquation[0])
+                                .variables("x", "y", "z")
+                                .build()
+                                .setVariable("x", 0)
+                                .setVariable("y", 0)
+                                .setVariable("z", 1)
+                                .evaluate();
+            matrix[i][3] = Double.parseDouble(parsedEquation[1]);                  
+        }
+        return matrix;
 
     }
     

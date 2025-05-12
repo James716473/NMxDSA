@@ -12,9 +12,12 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class App {
     public static void main(String[] args) {
-        int[] a = {5, 6, 7, 8};
-        int[] b = {1, 2, 3, 4};
-        System.out.println(Arrays.deepToString(matrix(a, b)));
+        String[] equations = {
+            "2x + y - z = 1",
+            "3x - y + z = 4",
+            "2x + 3y + z = 3"
+        };
+        System.out.println(cramer(equations));
     }
 
     public static double numericalDerivative(Expression expression, double x) {
@@ -99,7 +102,7 @@ public class App {
         }
     }
     //only works for when matrix a and b is a one dimensional array
-    public static int[][] matrix(int[] a, int[] b){
+    public static int[][] matrixMultiplication(int[] a, int[] b){
         int[][] ab = new int[a.length][b.length];
         for(int i = 0; i < a.length; i++){
             for(int j = 0; j < b.length; j++){
@@ -109,5 +112,48 @@ public class App {
         return ab;
     }
 
+    //can only solve 3x3 matrix (x, y, z)
+    public static double cramer(String[] equations){
+        double[][] matrix = new double[3][4];
+        for(int i = 0; i < matrix.length; i++){
+            String[] equation = parseEquation(equations[i]);
+            matrix[i][0] = new ExpressionBuilder(equation[0])
+                                .variables("x", "y", "z")
+                                .build()
+                                .setVariable("x", 1)
+                                .setVariable("y", 0)
+                                .setVariable("z", 0)
+                                .evaluate();
+            matrix[i][1] = new ExpressionBuilder(equation[0])
+                                .variables("x", "y", "z")
+                                .build()
+                                .setVariable("x", 0)
+                                .setVariable("y", 1)
+                                .setVariable("z", 0)
+                                .evaluate();
+            matrix[i][2] = new ExpressionBuilder(equation[0])
+                                .variables("x", "y", "z")
+                                .build()
+                                .setVariable("x", 0)
+                                .setVariable("y", 0)
+                                .setVariable("z", 1)
+                                .evaluate();
+            matrix[i][3] = Double.parseDouble(equation[1]);                  
+        }
+        double d = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
+                    - matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
+                    + matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+
+        return d;
+    }
+
+    public static String[] parseEquation(String equation){
+        String[] parsedEquation = new String[2];
+        equation.indexOf('=');
+        parsedEquation[0] = equation.substring(0, equation.indexOf('=')).trim();
+        parsedEquation[1] = equation.substring(equation.indexOf('=') + 1, equation.length()).trim();
+        return parsedEquation;
+
+    }
     
 }

@@ -13,12 +13,12 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 public class App {
     public static void main(String[] args) {
         String[] equations = {
-            "-x + y + 7z = -6",
-            "4x - y - z = 3",
-            "-2x + 6y + z = 9"
+            "4x + 22y - 13z = -128",
+            "19x - 13y + 4z = 111",
+            "8x + 8y + 17z = 10"
         };
 
-        System.out.println(Arrays.toString(jacobi(parseEquation(equations))));
+        System.out.println(Arrays.toString(gaussSeidel(parseEquation(equations))));
                                 
         
     }
@@ -213,10 +213,10 @@ public class App {
 
     public static double[] jacobiEvaluate(double[][] matrix, double[] guess){
         double nextGuess[] = new double[3];
-        nextGuess[0] = (guess[1] + guess[2] + matrix[0][3]) / matrix[0][0];
-        nextGuess[1] = (2 * guess[0] - guess[2] + matrix[1][3]) / matrix[1][1];
-        nextGuess[2] = (guess[0] - guess[1] + matrix[2][3]) / matrix[2][2];
-       
+        nextGuess[0] = (-matrix[0][1] * guess[1] + -matrix[0][2] * guess[2] + matrix[0][3]) / matrix[0][0];
+        nextGuess[1] = (-matrix[1][0] * guess[0] + -matrix[1][2] * guess[2] + matrix[1][3]) / matrix[1][1];
+        nextGuess[2] = (-matrix[2][0] * guess[0] + -matrix[2][1] * guess[1] + matrix[2][3]) / matrix[2][2];
+        System.out.println(Arrays.toString(nextGuess));
         if(Math.abs(nextGuess[0] - guess[0]) < 1e-3 && Math.abs(nextGuess[1] - guess[1]) < 1e-3 && Math.abs(nextGuess[2] - guess[2]) < 1e-3){
             return nextGuess;
         } else {
@@ -224,6 +224,52 @@ public class App {
             return jacobiEvaluate(matrix, nextGuess);
         }
     }
+
+    public static double[] gaussSeidel(double[][] matrix){
+       
+        
+        //still cant wrap my head around this shit man
+        for (int i = 0; i < matrix.length; i++) {
+            int maxRow = i;
+            for (int j = i + 1; j < matrix.length; j++) {
+                if (Math.abs(matrix[j][i]) > Math.abs(matrix[maxRow][i])) {
+                    maxRow = j;
+                }
+            }
+
+            // Swap if a more dominant row is found
+            if (maxRow != i) {
+                double[] temp = matrix[i];
+                matrix[i] = matrix[maxRow];
+                matrix[maxRow] = temp;
+            }
+        }
+        
+        //insert initial guess
+        double[] initialGuess = {0, 0, 0};
+        
+        
+        return gaussSeidelEvaluate(matrix, initialGuess);
+
+        
+
+    }
+
+    public static double[] gaussSeidelEvaluate(double[][] matrix, double[] guess){
+        double nextGuess[] = new double[3];
+        nextGuess[0] = (-matrix[0][1] * guess[1] + -matrix[0][2] * guess[2] + matrix[0][3]) / matrix[0][0];
+        nextGuess[1] = (-matrix[1][0] * nextGuess[0] + -matrix[1][2] * guess[2] + matrix[1][3]) / matrix[1][1];
+        nextGuess[2] = (-matrix[2][0] * nextGuess[0] + -matrix[2][1] * nextGuess[1] + matrix[2][3]) / matrix[2][2];
+        System.out.println(Arrays.toString(nextGuess));
+        if(Math.abs(nextGuess[0] - guess[0]) < 1e-3 && Math.abs(nextGuess[1] - guess[1]) < 1e-3 && Math.abs(nextGuess[2] - guess[2]) < 1e-3){
+            return nextGuess;
+        } else {
+            
+            return gaussSeidelEvaluate(matrix, nextGuess);
+        }
+    }
+
+    
 
     
     

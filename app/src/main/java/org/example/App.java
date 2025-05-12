@@ -13,11 +13,14 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 public class App {
     public static void main(String[] args) {
         String[] equations = {
-            "2x + y - z = 1",
-            "3x - y + z = 4",
-            "2x + 3y + z = 3"
+            "2x - y + 3z = 5",
+            "x + 4y - 2z = 1",
+            "3x + y + 5z = 2"
         };
-        System.out.println(Arrays.toString(cramer(equations)));
+
+        System.out.println(Arrays.toString(guassianElimination(equations)));
+                                
+        
     }
 
     public static double numericalDerivative(Expression expression, double x) {
@@ -160,6 +163,68 @@ public class App {
         return answer;
     }
 
+    public static double[] guassianElimination(String[] equations){
+        double[][] matrix = new double[3][4];
+        //dito magiging 0 pyramid or kung ano man tawag? idfk man
+        for(int i = 0; i < matrix.length; i++){
+            String[] equation = parseEquation(equations[i]);
+            matrix[i][0] = new ExpressionBuilder(equation[0])
+                                .variables("x", "y", "z")
+                                .build()
+                                .setVariable("x", 1)
+                                .setVariable("y", 0)
+                                .setVariable("z", 0)
+                                .evaluate();
+            matrix[i][1] = new ExpressionBuilder(equation[0])
+                                .variables("x", "y", "z")
+                                .build()
+                                .setVariable("x", 0)
+                                .setVariable("y", 1)
+                                .setVariable("z", 0)
+                                .evaluate();
+            matrix[i][2] = new ExpressionBuilder(equation[0])
+                                .variables("x", "y", "z")
+                                .build()
+                                .setVariable("x", 0)
+                                .setVariable("y", 0)
+                                .setVariable("z", 1)
+                                .evaluate();
+            matrix[i][3] = Double.parseDouble(equation[1]);                  
+        }
+        for(int i = 0; i < matrix.length; i++){
+
+            for(int j = i + 1; j < matrix.length; j++){
+                if(Math.abs(matrix[j][i]) > Math.abs(matrix[i][i])){
+                    double[] temp = matrix[i];
+                    matrix[i] = matrix[j];
+                    matrix[j] = temp;
+                }
+            }
+
+            
+
+            for (int j = i + 1; j < matrix.length; j++) {
+                double factor = matrix[j][i] / matrix[i][i];
+                for (int k = i; k <= matrix.length; k++) {
+                    matrix[j][k] -= factor * matrix[i][k];
+                }
+            }
+            
+        }
+
+        // Back Substitution
+        double[] solution = new double[matrix.length];
+        for (int i = matrix.length - 1; i >= 0; i--) {
+            double sum = 0;
+            for (int j = i + 1; j < matrix.length; j++) {
+                sum += matrix[i][j] * solution[j];
+            }
+            solution[i] = (matrix[i][matrix.length] - sum) / matrix[i][i];
+        }
+
+        return solution;
+    }
+    
     public static String[] parseEquation(String equation){
         String[] parsedEquation = new String[2];
         equation.indexOf('=');

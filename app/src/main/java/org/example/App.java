@@ -19,9 +19,11 @@ public class App {
                                     .build();
 
         List<Double> xn = new ArrayList<>();
-        double x0 = 0;
+        double x0 = 1.2;
+        double x1 = 1.4;
         xn.add(x0);
-        System.out.println(newtonRaphson(expression, x0, xn));
+        xn.add(x1);
+        System.out.println(secant(expression, x0, x1, xn));
                                 
         
     }
@@ -61,15 +63,16 @@ public class App {
         } 
     }
 
-    public static double secant(Expression expression, double x0, double x1){
+    public static List<Double> secant(Expression expression, double x0, double x1, List<Double> xn){
         //base case:
 
         double nextX = x1 - (expression.setVariable("x", x1).evaluate() * ((x1 - x0) / (expression.setVariable("x", x1).evaluate() - expression.setVariable("x", x0).evaluate())));
+        xn.add(nextX);
 
         if(Math.abs(nextX - x1) <= 1e-4){
-            return nextX;
+            return xn;
         } else {
-            return secant(expression, x1, nextX);
+            return secant(expression, x1, nextX, xn);
         }
     }
 

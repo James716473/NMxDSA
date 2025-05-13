@@ -5,20 +5,23 @@ package org.example;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class App {
     public static void main(String[] args) {
-        String[] equations = {
-            "4x + 22y - 13z = -128",
-            "19x - 13y + 4z = 111",
-            "8x + 8y + 17z = 10"
-        };
+        Expression expression = new ExpressionBuilder("2^x - 5x + 2")
+                                    .variable("x")
+                                    .build();
 
-        System.out.println(Arrays.toString(gaussSeidel(parseEquation(equations))));
+        List<Double> xn = new ArrayList<>();
+        double x0 = 0;
+        xn.add(x0);
+        System.out.println(newtonRaphson(expression, x0, xn));
                                 
         
     }
@@ -41,20 +44,20 @@ public class App {
         return Math.round((f1 - f2) / (2 * h));
     }
 
-    public static double newtonRaphson(Expression expression, double x){
+    public static List<Double> newtonRaphson(Expression expression, double x, List<Double> xn){
         //base case:
         double xd = numericalDerivative(expression, x);
         if (new BigDecimal(xd).setScale(4, RoundingMode.HALF_UP).compareTo(BigDecimal.ZERO) == 0) {
             System.out.println("Derivative is zero. Cannot proceed.");
-            return x;  
+            return xn;
         }
 
         double nextX = x - (expression.setVariable("x", x).evaluate() / xd);
-
+        xn.add(nextX);
         if (Math.abs(nextX - x) <= 1e-4){
-            return nextX;
+            return xn;
         } else {
-            return newtonRaphson(expression, nextX);
+            return newtonRaphson(expression, nextX, xn);
         } 
     }
 

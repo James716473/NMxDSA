@@ -16,7 +16,7 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class App {
     public static void main(String[] args) {
-        Expression expression = new ExpressionBuilder("x^3 + 4x^2 - 10")
+        Expression expression = new ExpressionBuilder("x^3 - 4cos(x)")
                                     .variable("x")
                                     .build();
 
@@ -99,18 +99,20 @@ public class App {
 
     }
 
-    public static double falsePosition(Expression expression, double xL, double xR){
+    public static List<Tuple<Double, Double>> falsePosition(Expression expression, double xL, double xR, List<Tuple<Double, Double>> xn){
         if(expression.setVariable("x", xL).evaluate() * expression.setVariable("x", xR).evaluate()> 0){
             System.out.println("xL and xR should have opposite signs");
-            return xL;
+            return xn;
         }
         double nextX = xL + (((xR-xL) * (-1 * expression.setVariable("x", xL).evaluate())) / (expression.setVariable("x", xR).evaluate() - expression.setVariable("x", xL).evaluate()));
         if(new BigDecimal(expression.setVariable("x", nextX).evaluate()).setScale(4, RoundingMode.HALF_UP).compareTo(BigDecimal.ZERO) == 0){
-            return nextX;
+            return xn;
         } else if (expression.setVariable("x", xL).evaluate() * expression.setVariable("x", nextX).evaluate() < 0){
-            return falsePosition(expression, xL, nextX);
+            xn.add(new Tuple<Double,Double>(xL, nextX));
+            return falsePosition(expression, xL, nextX, xn);
         } else {
-            return falsePosition(expression, nextX, xR);
+            xn.add(new Tuple<Double,Double>(nextX, xR));
+            return falsePosition(expression, nextX, xR, xn);
         }
     }
     //only works for when matrix a and b is a one dimensional array

@@ -9,21 +9,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
+
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class App {
     public static void main(String[] args) {
-        Expression expression = new ExpressionBuilder("2^x - 5x + 2")
+        Expression expression = new ExpressionBuilder("x^3 + 4x^2 - 10")
                                     .variable("x")
                                     .build();
 
-        List<Double> xn = new ArrayList<>();
-        double x0 = 1.2;
-        double x1 = 1.4;
-        xn.add(x0);
-        xn.add(x1);
-        System.out.println(secant(expression, x0, x1, xn));
+        List<Tuple<Double, Double>> xn = new ArrayList<>();
+        double xL = 1;
+        double xR = 2;
+        xn.add(new Tuple<Double,Double>(xL, xR));
+        System.out.println(bisection(expression, xL, xR, xn));
                                 
         
     }
@@ -76,22 +77,24 @@ public class App {
         }
     }
 
-    public static double bisection(Expression expression, double xL, double xR){
+    public static List<Tuple<Double, Double>> bisection(Expression expression, double xL, double xR, List<Tuple<Double, Double>> xn){
         //base case:
         double xM = (xL + xR) / 2;
         if(expression.setVariable("x", xL).evaluate() * expression.setVariable("x", xR).evaluate()> 0){
             System.out.println("xL and xR should have opposite signs");
-            return xM;
+            return xn;
         }
         
         double fxM = expression.setVariable("x", xM).evaluate();
 
         if(new BigDecimal(fxM).setScale(4, RoundingMode.HALF_UP).compareTo(BigDecimal.ZERO) == 0){
-            return xM;
+            return xn;
         } else if (expression.setVariable("x", xL).evaluate() * fxM < 0){
-            return bisection(expression, xL, xM);
+            xn.add(new Tuple<Double, Double>(xL, xM));
+            return bisection(expression, xL, xM, xn);
         } else {
-            return bisection(expression, xM, xR);
+            xn.add(new Tuple<Double, Double>(xM, xL));
+            return bisection(expression, xM, xR, xn);
         }
 
     }

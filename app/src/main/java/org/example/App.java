@@ -241,7 +241,7 @@ public class App {
         }
     }
 
-    public static double[] gaussSeidel(double[][] matrix){
+    public static List<Double[]> gaussSeidel(double[][] matrix, List<Double[]> xyz){
        
         
         //still cant wrap my head around this shit man
@@ -262,26 +262,26 @@ public class App {
         }
         
         //insert initial guess
-        double[] initialGuess = {0, 0, 0};
+        Double[] initialGuess = {0.0, 0.0, 0.0};
         
         
-        return gaussSeidelEvaluate(matrix, initialGuess);
+        return gaussSeidelEvaluate(matrix, initialGuess, xyz);
 
         
 
     }
 
-    public static double[] gaussSeidelEvaluate(double[][] matrix, double[] guess){
-        double nextGuess[] = new double[3];
+    public static List<Double[]> gaussSeidelEvaluate(double[][] matrix, Double[] guess, List<Double[]> xyz){
+        Double nextGuess[] = new Double[3];
         nextGuess[0] = (-matrix[0][1] * guess[1] + -matrix[0][2] * guess[2] + matrix[0][3]) / matrix[0][0];
         nextGuess[1] = (-matrix[1][0] * nextGuess[0] + -matrix[1][2] * guess[2] + matrix[1][3]) / matrix[1][1];
         nextGuess[2] = (-matrix[2][0] * nextGuess[0] + -matrix[2][1] * nextGuess[1] + matrix[2][3]) / matrix[2][2];
         System.out.println(Arrays.toString(nextGuess));
         if(Math.abs(nextGuess[0] - guess[0]) < 1e-3 && Math.abs(nextGuess[1] - guess[1]) < 1e-3 && Math.abs(nextGuess[2] - guess[2]) < 1e-3){
-            return nextGuess;
+            return xyz;
         } else {
-            
-            return gaussSeidelEvaluate(matrix, nextGuess);
+            xyz.add(nextGuess);
+            return gaussSeidelEvaluate(matrix, nextGuess, xyz);
         }
     }
 

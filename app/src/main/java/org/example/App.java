@@ -16,13 +16,13 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class App {
     public static void main(String[] args) {
-        Expression expression = new ExpressionBuilder("x^2 - x - 1")
+        Expression expression = new ExpressionBuilder("e^-x")
                                     .variable("x")
                                     .build();
-        List<Tuple<Double, Double>> xn = new ArrayList<>();
+        List<Double> xn = new ArrayList<>();
         double xL = 0;
         double xR = 1;
-        System.out.println(bisection(expression, xL, xR, xn));
+        System.out.println(fixedPoint(expression, xL, xn).toString());
         
                                 
         
@@ -44,6 +44,16 @@ public class App {
 
         // Approximate the derivative using the central difference formula
         return Math.round((f1 - f2) / (2 * h));
+    }
+
+    public static List<Double> fixedPoint(Expression expression, double x, List<Double> xn){
+        double nextX = expression.setVariable("x", x).evaluate();
+        if(Math.abs(nextX - x) <= 1e-3){
+            return xn;
+        } else {
+            xn.add(nextX);
+            return fixedPoint(expression, nextX, xn);
+        }
     }
 
     public static List<Double> newtonRaphson(Expression expression, double x, List<Double> xn){

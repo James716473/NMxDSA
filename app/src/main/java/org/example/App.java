@@ -16,15 +16,19 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class App {
     public static void main(String[] args) {
-        Expression expression = new ExpressionBuilder("x^3 - 4cos(x)")
-                                    .variable("x")
-                                    .build();
-
-        List<Tuple<Double, Double>> xn = new ArrayList<>();
+        String[] equations = {
+            "4x + 22y - 13z = -128",
+            "19x - 13y + 4z = 111",
+            "8x + 8y + 17z = 10"
+        };
+        List<Double[]> xyz = new ArrayList<>();
         double xL = 1;
         double xR = 2;
-        xn.add(new Tuple<Double,Double>(xL, xR));
-        System.out.println(bisection(expression, xL, xR, xn));
+        List<Double[]> ans = jacobi(parseEquation(equations), xyz);
+        for(var i : ans){
+            System.out.println(Arrays.toString(i));
+        }
+        
                                 
         
     }
@@ -192,7 +196,7 @@ public class App {
     }
 
     //iparse muna as matrix
-    public static double[] jacobi(double[][] matrix){
+    public static List<Double[]> jacobi(double[][] matrix, List<Double[]> xyz){
        
         
         //still cant wrap my head around this shit man
@@ -213,26 +217,27 @@ public class App {
         }
         
         //insert initial guess
-        double[] initialGuess = {0, 0, 0};
+        Double[] initialGuess = {0.0, 0.0, 0.0};
         
         
-        return jacobiEvaluate(matrix, initialGuess);
+        return jacobiEvaluate(matrix, initialGuess, xyz);
 
         
 
     }
 
-    public static double[] jacobiEvaluate(double[][] matrix, double[] guess){
-        double nextGuess[] = new double[3];
+    public static List<Double[]> jacobiEvaluate(double[][] matrix, Double[] guess, List<Double[]> xyz){
+        
+        Double nextGuess[] = new Double[3];
         nextGuess[0] = (-matrix[0][1] * guess[1] + -matrix[0][2] * guess[2] + matrix[0][3]) / matrix[0][0];
         nextGuess[1] = (-matrix[1][0] * guess[0] + -matrix[1][2] * guess[2] + matrix[1][3]) / matrix[1][1];
         nextGuess[2] = (-matrix[2][0] * guess[0] + -matrix[2][1] * guess[1] + matrix[2][3]) / matrix[2][2];
         System.out.println(Arrays.toString(nextGuess));
         if(Math.abs(nextGuess[0] - guess[0]) < 1e-3 && Math.abs(nextGuess[1] - guess[1]) < 1e-3 && Math.abs(nextGuess[2] - guess[2]) < 1e-3){
-            return nextGuess;
+            return xyz;
         } else {
-            
-            return jacobiEvaluate(matrix, nextGuess);
+            xyz.add(nextGuess);
+            return jacobiEvaluate(matrix, nextGuess, xyz);
         }
     }
 

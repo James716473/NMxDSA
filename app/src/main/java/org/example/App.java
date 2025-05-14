@@ -16,18 +16,13 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class App {
     public static void main(String[] args) {
-        String[] equations = {
-            "4x + 22y - 13z = -128",
-            "19x - 13y + 4z = 111",
-            "8x + 8y + 17z = 10"
-        };
-        List<Double[]> xyz = new ArrayList<>();
-        double xL = 1;
-        double xR = 2;
-        List<Double[]> ans = jacobi(parseEquation(equations), xyz);
-        for(var i : ans){
-            System.out.println(Arrays.toString(i));
-        }
+        Expression expression = new ExpressionBuilder("x^2 - x - 1")
+                                    .variable("x")
+                                    .build();
+        List<Tuple<Double, Double>> xn = new ArrayList<>();
+        double xL = 0;
+        double xR = 1;
+        System.out.println(bisection(expression, xL, xR, xn));
         
                                 
         
@@ -70,7 +65,9 @@ public class App {
 
     public static List<Double> secant(Expression expression, double x0, double x1, List<Double> xn){
         //base case:
-
+        if(xn.size() == 100){
+            return xn;
+        }
         double nextX = x1 - (expression.setVariable("x", x1).evaluate() * ((x1 - x0) / (expression.setVariable("x", x1).evaluate() - expression.setVariable("x", x0).evaluate())));
         xn.add(nextX);
 
@@ -83,6 +80,9 @@ public class App {
 
     public static List<Tuple<Double, Double>> bisection(Expression expression, double xL, double xR, List<Tuple<Double, Double>> xn){
         //base case:
+        if(xn.size() == 100){
+            return xn;
+        }
         double xM = (xL + xR) / 2;
         if(expression.setVariable("x", xL).evaluate() * expression.setVariable("x", xR).evaluate()> 0){
             System.out.println("xL and xR should have opposite signs");
@@ -100,6 +100,7 @@ public class App {
             xn.add(new Tuple<Double, Double>(xM, xL));
             return bisection(expression, xM, xR, xn);
         }
+        
 
     }
 

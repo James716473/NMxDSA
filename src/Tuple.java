@@ -1,4 +1,4 @@
-package org.example;
+package src;
 
 class Tuple<T, U> {
     T first;

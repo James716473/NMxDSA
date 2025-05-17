@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" styleClass="main--anchor__pane" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fx.Controller">
+   <children>
+      <BorderPane fx:id="mainPane" layoutX="7.0" layoutY="7.0" prefHeight="686.0" prefWidth="985.0" AnchorPane.rightAnchor="8.0">
+         <left>
+            <VBox alignment="CENTER" prefHeight="686.0" prefWidth="208.0" styleClass="vBox" stylesheets="@styles.css" BorderPane.alignment="CENTER">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#Fixed_Point" styleClass="select--btn" stylesheets="@styles.css" text="Fixed Point" textAlignment="CENTER">
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#Newton_Raphson" styleClass="select--btn" stylesheets="@styles.css" text="Newton - Raphson" textAlignment="CENTER">
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#Secant" styleClass="select--btn" stylesheets="@styles.css" text="Secant" textAlignment="CENTER">
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#Bisection" styleClass="select--btn" stylesheets="@styles.css" text="Bisection" textAlignment="CENTER">
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#False_Position" styleClass="select--btn" stylesheets="@styles.css" text="False Position" textAlignment="CENTER">
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#Matrix" styleClass="select--btn" stylesheets="@styles.css" text="Matrix" textAlignment="CENTER">
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#Cramers_Rule" styleClass="select--btn" stylesheets="@styles.css" text="Cramer's Rule" textAlignment="CENTER">
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#Gaussian_Elimination" styleClass="select--btn" stylesheets="@styles.css" text="Gaussian Elimination" textAlignment="CENTER">
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#Jacobi" styleClass="select--btn" stylesheets="@styles.css" text="Jacobi" textAlignment="CENTER">
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#Gauss_Seidel" styleClass="select--btn" stylesheets="@styles.css" text="Gauss - Seidel" textAlignment="CENTER">
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Roboto Regular" size="15.0" />
+                     </font>
+                  </Button>
+               </children>
+            </VBox>
+         </left>
+         <center>
+            <ScrollPane hbarPolicy="NEVER" prefHeight="555.0" prefWidth="538.0" BorderPane.alignment="CENTER">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="555.0" prefWidth="538.0">
+                     <children>
+                        <Label layoutX="136.0" layoutY="159.0" text="Numerical Methods Calculator">
+                           <font>
+                              <Font name="LEMON MILK Regular" size="28.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="353.0" layoutY="362.0" text="Members">
+                           <font>
+                              <Font name="LEMON MILK Regular" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="260.0" layoutY="404.0" text="Belen, James Laurence E.&#10;Cagara, Josh Lendl M.&#10;De Guzman, Dionel SM.&#10;Enriquez, Ryen Uri C.&#10;BSCpE - 2C" textAlignment="CENTER">
+                           <font>
+                              <Font name="LEMON MILK Regular" size="20.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </ScrollPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

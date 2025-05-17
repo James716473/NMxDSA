@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fx:id="mainPane" hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="650.0" minWidth="700.0" prefHeight="650.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <AnchorPane maxWidth="1.7976931348623157E308" prefHeight="650.0" prefWidth="700.0" styleClass="right--pane" stylesheets="@../styles.css">
+         <children>
+            <Label layoutX="20.0" layoutY="20.0" text="Expression Here" />
+            <Label layoutX="20.0" layoutY="70.0" maxWidth="645.0" text="dsafasodfjaskfsafskadfsadasdasdsasdasdadofkplsadkfonjsaokfpsadfjnsaokfsadjnfndaasfdasdfsadfasfasdfasdasdffasdfdsfassk" wrapText="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children></AnchorPane>
+   </content>
+</ScrollPane>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="700.0" styleClass="right--pane" stylesheets="@../styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fx.Controller">
+   <children>
+      <Label layoutX="302.0" layoutY="121.0" stylesheets="@../styles.css" text="Matrix Method">
+         <font>
+            <Font name="Roboto Regular" size="20.0" />
+         </font>
+      </Label>
+      <VBox alignment="CENTER" layoutX="170.0" layoutY="145.0" prefHeight="350.0" prefWidth="400.0" stylesheets="@../styles.css">
+         <children>
+            <Label stylesheets="@../styles.css" text="Expression">
+               <font>
+                  <Font name="Roboto Regular" size="17.0" />
+               </font>
+               <VBox.margin>
+                  <Insets right="215.0" />
+               </VBox.margin>
+            </Label>
+            <TextField promptText="e.g.: x^3 - 4cos(x)" styleClass="textField" stylesheets="@../styles.css">
+               <VBox.margin>
+                  <Insets bottom="15.0" left="50.0" right="50.0" />
+               </VBox.margin>
+            </TextField>
+            <Label stylesheets="@../styles.css" text="Initial Guess">
+               <font>
+                  <Font name="Roboto Regular" size="17.0" />
+               </font>
+               <VBox.margin>
+                  <Insets right="205.0" />
+               </VBox.margin>
+            </Label>
+            <HBox alignment="CENTER" prefHeight="150.0" prefWidth="326.0">
+               <children>
+                  <Label prefHeight="20.0" prefWidth="25.0" stylesheets="@../styles.css" text="A =" textOverrun="CLIP">
+                     <font>
+                        <Font name="Roboto Regular" size="17.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Label>
+                  <TextArea maxHeight="120.0" maxWidth="70.0" minWidth="39.0" prefColumnCount="3" prefRowCount="6" prefWidth="70.0" promptText="enter" styleClass="textArea" stylesheets="@../styles.css">
+                     <HBox.margin>
+                        <Insets top="10.0" />
+                     </HBox.margin>
+                  </TextArea>
+                  <Label prefHeight="20.0" prefWidth="25.0" stylesheets="@../styles.css" text="B =" textOverrun="CLIP">
+                     <font>
+                        <Font name="Roboto Regular" size="17.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField alignment="CENTER" prefHeight="26.0" prefWidth="149.0" promptText="space" styleClass="textField" stylesheets="@../styles.css">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+               <padding>
+                  <Insets bottom="15.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets left="20.0" right="20.0" />
+               </VBox.margin>
+            </HBox>
+            <Label stylesheets="@../styles.css" text="Tolerance">
+               <font>
+                  <Font name="Roboto Regular" size="17.0" />
+               </font>
+               <VBox.margin>
+                  <Insets right="220.0" />
+               </VBox.margin>
+            </Label>
+            <TextField promptText="e.g.: 0.001" styleClass="textField" stylesheets="@../styles.css">
+               <VBox.margin>
+                  <Insets bottom="15.0" left="50.0" right="50.0" />
+               </VBox.margin>
+            </TextField>
+            <Button mnemonicParsing="false" onAction="#SolutionWindow" text="Solve" textAlignment="CENTER" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

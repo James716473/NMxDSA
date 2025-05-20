@@ -1,17 +1,22 @@
-package src;
+public class Tuple<X, Y> {
+    private X x;
+    private Y y;
 
-class Tuple<T, U> {
-    T first;
-    U second;
+    public Tuple(X x, Y y) {
+        this.x = x;
+        this.y = y;
+    }
 
-    // Constructor that accepts any two types
-    Tuple(T first, U second) {
-        this.first = first;
-        this.second = second;
+    public X getX() {
+        return x;
+    }
+
+    public Y getY() {
+        return y;
     }
 
     @Override
     public String toString() {
-        return "(" + first + ", " + second + ")";
+        return "(" + x + ", " + y + ")";
     }
 }

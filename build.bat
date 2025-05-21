@@ -1,27 +1,29 @@
 @echo off
-setlocal enabledelayedexpansion
+echo Building project...
 
-:: Create bin directory if it doesn't exist
-if not exist bin mkdir bin
+if not exist "lib" (
+    echo Error: lib directory not found!
+    echo Please ensure you have the exp4j library in the lib directory
+    pause
+    exit /b 1
+)
 
-:: Set classpath to include exp4j library
-set CLASSPATH=.;%CD%\lib\exp4j-0.4.8.jar
+if not exist "bin" mkdir bin
 
-:: Compile
 echo Compiling Java files...
-javac -d bin -cp "%CLASSPATH%" src\*.java
+javac -cp "lib/*" -d bin src/*.java
 if errorlevel 1 (
     echo Compilation failed!
+    pause
     exit /b 1
 )
 
-:: Run
 echo Running application...
-java -cp "bin;%CLASSPATH%" App
+java -cp "lib/*;bin" CalculatorApp
 if errorlevel 1 (
-    echo Execution failed!
+    echo Application execution failed!
+    pause
     exit /b 1
 )
 
-echo Build and execution completed successfully.
-exit /b 0
+pause

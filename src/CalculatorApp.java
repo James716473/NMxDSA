@@ -434,6 +434,16 @@ public class CalculatorApp {
         form.add(labeledField("Max Iterations", maxIter), "growx");
         panel.add(form);
         JButton calc = calcButton(); // calc is short for calculator btw
+        calc.addActionListener(e -> {
+            String funcStr = func.getText();
+            String aStr = a.getText();
+            String bStr = b.getText();
+            String tolStr = tol.getText();
+            String maxIterStr = maxIter.getText();
+            methods.setMaxIteration(Integer.parseInt(maxIterStr));
+            methods.setTolerance(new BigDecimal(tolStr));
+            System.out.println(methods.falsePosition(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>()));
+        });
         panel.add(calc, "align left, gaptop 10");
         return panel;
     }

@@ -59,7 +59,8 @@ public class Methods {
         if(Math.abs(nextX - x) <= tolerance.doubleValue()){
             return xn;
         } else {
-            xn.add(new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue()); // ginagawa lang neto is niroroundoff ung x base dun sa tolerance
+            nextX = new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue(); 
+            xn.add(nextX); 
             return fixedPoint(expression, nextX, xn);
         }
     }
@@ -82,7 +83,8 @@ public class Methods {
         if(Math.abs(nextX - x) <= tolerance.doubleValue()){
             return xn;
         } else {
-            xn.add(new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue()); // ginagawa lang neto is niroroundoff ung x base dun sa tolerance
+            nextX = new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();// ginagawa lang neto is niroroundoff ung x base dun sa tolerance
+            xn.add(nextX); 
             return newtonRaphson(expression, nextX, xn);
         }
     }
@@ -103,37 +105,43 @@ public class Methods {
         if(Math.abs(nextX - x1) <= tolerance.doubleValue()){
             return xn;
         } else {
-            xn.add(new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue()); // ginagawa lang neto is niroroundoff ung x base dun sa tolerance
+            nextX = new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            xn.add(nextX); 
             return secant(expression, x1, nextX, xn);
         }
     }
 
     public List<Tuple<Double, Double>> bisection(Expression expression, double xL, double xR, List<Tuple<Double, Double>> xn){
         //base case:
-        if(xn.size() == maxIteration){
+        if(xn.size() == 0){
+            xn.add(new Tuple<Double, Double>(xL, xR));
+        }
+        if(xn.size() == maxIteration + 1){
             System.out.println("Max iterations reached. Cannot proceed.");
             return xn;
         }
-        if(xn.size() == 100){
-            return xn;
-        }
+        
         double xM = (xL + xR) / 2;
         if(expression.setVariable("x", xL).evaluate() * expression.setVariable("x", xR).evaluate()> 0){
             System.out.println("xL and xR should have opposite signs");
             return xn;
         }
-        
+        xM = new BigDecimal(xM).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
         double fxM = expression.setVariable("x", xM).evaluate();
-
-        if(new BigDecimal(fxM).setScale(4, RoundingMode.HALF_UP).compareTo(BigDecimal.ZERO) == 0){
+        
+        
+        if(Math.abs(xR - xL) < tolerance.doubleValue()){
+            xn.add(new Tuple<Double, Double>(xM, xM));
             return xn;
         } else if (expression.setVariable("x", xL).evaluate() * fxM < 0){
+            
             xn.add(new Tuple<Double, Double>(xL, xM));
             return bisection(expression, xL, xM, xn);
         } else {
-            xn.add(new Tuple<Double, Double>(xM, xL));
+            xn.add(new Tuple<Double, Double>(xM, xR));
             return bisection(expression, xM, xR, xn);
         }
+        
         
 
     }
@@ -148,7 +156,9 @@ public class Methods {
             return xn;
         }
         double nextX = xL + (((xR-xL) * (-1 * expression.setVariable("x", xL).evaluate())) / (expression.setVariable("x", xR).evaluate() - expression.setVariable("x", xL).evaluate()));
-        if(new BigDecimal(expression.setVariable("x", nextX).evaluate()).setScale(4, RoundingMode.HALF_UP).compareTo(BigDecimal.ZERO) == 0){
+        nextX = new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+        if(Math.abs(nextX - xL) < tolerance.doubleValue() || Math.abs(nextX - xR) < tolerance.doubleValue()){
+            xn.add(new Tuple<Double,Double>(nextX, nextX));
             return xn;
         } else if (expression.setVariable("x", xL).evaluate() * expression.setVariable("x", nextX).evaluate() < 0){
             xn.add(new Tuple<Double,Double>(xL, nextX));

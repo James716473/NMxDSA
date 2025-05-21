@@ -40,7 +40,7 @@ public class CalculatorApp {
         JPanel navBar = new JPanel(new MigLayout("insets 16 0 16 0, fill, align center", "push[][][]push", "push[]push"));
         navBar.setBackground(Color.WHITE);
         JButton homeBtn = navButton("Home");
-        JButton calcBtn = navButton("Calculator");
+        JButton calcBtn = navButton("Calculator"); // calc is short for calculator btw
         JButton histBtn = navButton("History");
         navBar.add(homeBtn, "align center, gapright 20");
         navBar.add(calcBtn, "align center, gapright 20");
@@ -266,7 +266,7 @@ public class CalculatorApp {
         form.add(labeledField("Tolerance", tol), "growx");
         form.add(labeledField("Max Iterations", maxIter), "growx");
         panel.add(form);
-        JButton calc = calcButton();
+        JButton calc = calcButton(); // calc is short for calculator btw
         calc.addActionListener(e -> {
             String funcStr = func.getText();
             String guessStr = guess.getText();
@@ -305,7 +305,7 @@ public class CalculatorApp {
         form.add(labeledField("Tolerance", tol), "growx");
         form.add(labeledField("Max Iterations", maxIter), "growx");
         panel.add(form);
-        JButton calc = calcButton();
+        JButton calc = calcButton(); // calc is short for calculator btw
         calc.addActionListener(e -> {
             String funcStr = func.getText();
             String guessStr = guess.getText();
@@ -347,7 +347,7 @@ public class CalculatorApp {
         form.add(labeledField("Tolerance", tol), "growx");
         form.add(labeledField("Max Iterations", maxIter), "growx");
         panel.add(form);
-        JButton calc = calcButton();
+        JButton calc = calcButton(); // calc is short for calculator btw
         calc.addActionListener(e -> {
             String funcStr = func.getText();
             String x0Str = x0.getText();
@@ -390,7 +390,17 @@ public class CalculatorApp {
         form.add(labeledField("Tolerance", tol), "growx");
         form.add(labeledField("Max Iterations", maxIter), "growx");
         panel.add(form);
-        JButton calc = calcButton();
+        JButton calc = calcButton(); // calc is short for calculator btw
+        calc.addActionListener(e -> {
+            String funcStr = func.getText();
+            String aStr = a.getText();
+            String bStr = b.getText();
+            String tolStr = tol.getText();
+            String maxIterStr = maxIter.getText();
+            methods.setMaxIteration(Integer.parseInt(maxIterStr));
+            methods.setTolerance(new BigDecimal(tolStr));
+            System.out.println(methods.bisection(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>()));
+        });
         panel.add(calc, "align left, gaptop 10");
         return panel;
     }
@@ -423,7 +433,7 @@ public class CalculatorApp {
         form.add(labeledField("Tolerance", tol), "growx");
         form.add(labeledField("Max Iterations", maxIter), "growx");
         panel.add(form);
-        JButton calc = calcButton();
+        JButton calc = calcButton(); // calc is short for calculator btw
         panel.add(calc, "align left, gaptop 10");
         return panel;
     }
@@ -491,7 +501,7 @@ public class CalculatorApp {
         scroll.setBorder(BorderFactory.createEmptyBorder());
         scroll.setPreferredSize(equations.getPreferredSize());
         panel.add(scroll, "align left");
-        JButton calc = calcButton();
+        JButton calc = calcButton(); // calc is short for calculator btw
         panel.add(calc, "align left, gaptop 10");
         return panel;
     }
@@ -507,7 +517,7 @@ public class CalculatorApp {
     }
 
     // Helper for Calculate button with hover effect
-    private JButton calcButton() {
+    private JButton calcButton() { // calc is short for calculator btw
         JButton btn = new JButton("Calculate");
         btn.setFont(new Font("Bodoni MT", Font.BOLD, 14));
         btn.setForeground(Color.WHITE);
@@ -683,7 +693,7 @@ public class CalculatorApp {
         panel.add(labelB, "align right, gapy 20, gapx 15");
         panel.add(bPanel, "align left, gaptop 20, wrap");
 
-        JButton calc = calcButton();
+        JButton calc = calcButton(); // calc is short for calculator btw
         panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
     }

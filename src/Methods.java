@@ -88,20 +88,22 @@ public class Methods {
     }
 
     public List<Double> secant(Expression expression, double x0, double x1, List<Double> xn){
-        //base case:
-        if(xn.size() == maxIteration){
+        if(xn.size() == 0){ // para masama yung initial guess
+            xn.add(x0);
+            xn.add(x1);
+        }
+        if(xn.size() == maxIteration + 1){ // para masama yung initial guess
             System.out.println("Max iterations reached. Cannot proceed.");
             return xn;
         }
-        if(xn.size() == 100){
-            return xn;
-        }
+        
         double nextX = x1 - (expression.setVariable("x", x1).evaluate() * ((x1 - x0) / (expression.setVariable("x", x1).evaluate() - expression.setVariable("x", x0).evaluate())));
-        xn.add(nextX);
+        
 
-        if(Math.abs(nextX - x1) <= 1e-4){
+        if(Math.abs(nextX - x1) <= tolerance.doubleValue()){
             return xn;
         } else {
+            xn.add(new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue()); // ginagawa lang neto is niroroundoff ung x base dun sa tolerance
             return secant(expression, x1, nextX, xn);
         }
     }

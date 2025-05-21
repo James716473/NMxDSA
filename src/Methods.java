@@ -10,27 +10,25 @@ import java.util.List;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
-public class App {
+public class Methods {
 
-    private static int MAX_ITERATIONS = 100;
+    private int maxIteration;
+    private BigDecimal tolerance;
 
-    public static void main(String[] args) {
-        
-        
-        System.out.println("Fixed Point Method:");
-        System.out.println(fixedPoint(parseEquation("e^-x = 0"), 0, new ArrayList<Double>()).toString());
-        System.out.println("Newton-Raphson Method:");
-        System.out.println(newtonRaphson(parseEquation("2^x - 5x + 2 = 0"), 0, new ArrayList<Double>()).toString());
-        System.out.println("Secant Method:");
-        System.out.println(secant(parseEquation("x^3 - x - 1 = 0"), 1.2, 1.4, new ArrayList<Double>()).toString());
-        System.out.println("Bisection Method:");
-        System.out.println(bisection(parseEquation("x^3 + 4x^2 - 10 = 0"), 1, 2, new ArrayList<Tuple<Double, Double>>()).toString());
-        System.out.println("False Position Method:");
-        System.out.println(falsePosition(parseEquation("x^3 - 4cos(x) = 0"), 1, 2, new ArrayList<Tuple<Double, Double>>()).toString());
-        
+    public Methods(int maxIteration) {
+        this.maxIteration = maxIteration;
+        this.tolerance = new BigDecimal(1e-3);
     }
 
-    public static double numericalDerivative(Expression expression, double x) {
+    public void setMaxIteration(int maxIteration) {
+        this.maxIteration = maxIteration;
+    }
+
+    public void setTolerance(BigDecimal tolerance) {
+        this.tolerance = tolerance;
+    }
+
+    public double numericalDerivative(Expression expression, double x) {
         double h = 1e-5;  // Small change in x (step size)
 
         // Create the expression with the variable 'x'
@@ -49,23 +47,28 @@ public class App {
     }
 
     //need a error handling where |g'(x)| < 1
-    public static List<Double> fixedPoint(Expression expression, double x, List<Double> xn){
-        if(xn.size() == MAX_ITERATIONS){
+    public List<Double> fixedPoint(Expression expression, double x, List<Double> xn){
+        if(xn.size() == 0){ // para masama yung initial guess
+            xn.add(x);
+        }
+        if(xn.size() == maxIteration + 1){ // para masama yung initial guess
             System.out.println("Max iterations reached. Cannot proceed.");
             return xn;
         }
         double nextX = expression.setVariable("x", x).evaluate();
-        if(Math.abs(nextX - x) <= 1e-3){
+        if(Math.abs(nextX - x) <= tolerance.doubleValue()){
             return xn;
         } else {
-            xn.add(nextX);
+            xn.add(new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue()); // ginagawa lang neto is niroroundoff ung x base dun sa tolerance
             return fixedPoint(expression, nextX, xn);
         }
     }
 
-    public static List<Double> newtonRaphson(Expression expression, double x, List<Double> xn){
-        //base case:
-        if(xn.size() == MAX_ITERATIONS){
+    public List<Double> newtonRaphson(Expression expression, double x, List<Double> xn){
+        if(xn.size() == 0){ // para masama yung initial guess
+            xn.add(x);
+        }
+        if(xn.size() == maxIteration + 1){ // para masama yung initial guess
             System.out.println("Max iterations reached. Cannot proceed.");
             return xn;
         }
@@ -76,17 +79,17 @@ public class App {
         }
 
         double nextX = x - (expression.setVariable("x", x).evaluate() / xd);
-        xn.add(nextX);
-        if (Math.abs(nextX - x) <= 1e-4){
+        if(Math.abs(nextX - x) <= tolerance.doubleValue()){
             return xn;
         } else {
+            xn.add(new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue()); // ginagawa lang neto is niroroundoff ung x base dun sa tolerance
             return newtonRaphson(expression, nextX, xn);
-        } 
+        }
     }
 
-    public static List<Double> secant(Expression expression, double x0, double x1, List<Double> xn){
+    public List<Double> secant(Expression expression, double x0, double x1, List<Double> xn){
         //base case:
-        if(xn.size() == MAX_ITERATIONS){
+        if(xn.size() == maxIteration){
             System.out.println("Max iterations reached. Cannot proceed.");
             return xn;
         }
@@ -103,9 +106,9 @@ public class App {
         }
     }
 
-    public static List<Tuple<Double, Double>> bisection(Expression expression, double xL, double xR, List<Tuple<Double, Double>> xn){
+    public List<Tuple<Double, Double>> bisection(Expression expression, double xL, double xR, List<Tuple<Double, Double>> xn){
         //base case:
-        if(xn.size() == MAX_ITERATIONS){
+        if(xn.size() == maxIteration){
             System.out.println("Max iterations reached. Cannot proceed.");
             return xn;
         }
@@ -133,8 +136,8 @@ public class App {
 
     }
 
-    public static List<Tuple<Double, Double>> falsePosition(Expression expression, double xL, double xR, List<Tuple<Double, Double>> xn){
-        if(xn.size() == MAX_ITERATIONS){
+    public List<Tuple<Double, Double>> falsePosition(Expression expression, double xL, double xR, List<Tuple<Double, Double>> xn){
+        if(xn.size() == maxIteration){
             System.out.println("Max iterations reached. Cannot proceed.");
             return xn;
         }
@@ -154,7 +157,7 @@ public class App {
         }
     }
     //only works for when matrix a and b is a one dimensional array
-    public static int[][] matrixMultiplication(int[] a, int[] b){
+    public int[][] matrixMultiplication(int[] a, int[] b){
         int[][] ab = new int[a.length][b.length];
         for(int i = 0; i < a.length; i++){
             for(int j = 0; j < b.length; j++){
@@ -166,7 +169,7 @@ public class App {
 
     //can only solve 3x3 matrix (x, y, z)
     //need muna iparse into matrix
-    public static double[] cramer(double[][] matrix){
+    public double[] cramer(double[][] matrix){
         
         
         double d = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
@@ -190,7 +193,7 @@ public class App {
     }
 
     //dapat iparse muna as matrix
-    public static double[] guassianElimination(double[][] matrix){
+    public double[] guassianElimination(double[][] matrix){
         
         
         for(int i = 0; i < matrix.length; i++){
@@ -230,7 +233,7 @@ public class App {
     }
 
     //iparse muna as matrix
-    public static List<Double[]> jacobi(double[][] matrix, List<Double[]> xyz){
+    public List<Double[]> jacobi(double[][] matrix, List<Double[]> xyz){
         
         
         //still cant wrap my head around this shit man
@@ -260,8 +263,8 @@ public class App {
 
     }
 
-    public static List<Double[]> jacobiEvaluate(double[][] matrix, Double[] guess, List<Double[]> xyz){
-        if(xyz.size() == MAX_ITERATIONS){
+    public List<Double[]> jacobiEvaluate(double[][] matrix, Double[] guess, List<Double[]> xyz){
+        if(xyz.size() == maxIteration){
             System.out.println("Max iterations reached. Cannot proceed.");
             return xyz;
         }
@@ -278,7 +281,7 @@ public class App {
         }
     }
 
-    public static List<Double[]> gaussSeidel(double[][] matrix, List<Double[]> xyz){
+    public List<Double[]> gaussSeidel(double[][] matrix, List<Double[]> xyz){
        
         
         //still cant wrap my head around this shit man
@@ -308,8 +311,8 @@ public class App {
 
     }
 
-    public static List<Double[]> gaussSeidelEvaluate(double[][] matrix, Double[] guess, List<Double[]> xyz){
-        if(xyz.size() == MAX_ITERATIONS){
+    public List<Double[]> gaussSeidelEvaluate(double[][] matrix, Double[] guess, List<Double[]> xyz){
+        if(xyz.size() == maxIteration){
             System.out.println("Max iterations reached. Cannot proceed.");
             return xyz;
         }
@@ -327,7 +330,7 @@ public class App {
     }
 
     
-    public static Expression parseEquation(String equation){
+    public Expression parseEquation(String equation){
         String[] parsedEquation = new String[2];
         
         parsedEquation[0] = equation.substring(0, equation.indexOf('=')).trim();
@@ -336,7 +339,7 @@ public class App {
     }
     
     
-    public static double[][] parseEquation(String[] equations){
+    public double[][] parseEquation(String[] equations){
         double[][] matrix = new double[3][4];
         for(int i = 0; i < equations.length; i++){
             String[] parsedEquation = new String[2];

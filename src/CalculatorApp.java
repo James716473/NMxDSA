@@ -5,13 +5,19 @@ import java.awt.*;
 import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.border.Border;
 import java.awt.BasicStroke;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.LinkedList;
+import java.math.BigDecimal;
+
 
 public class CalculatorApp {
     private static final String[] METHODS = {
             "Fixed-Point", "Newton-Raphson", "Secant", "Bisection", "False Position",
             "Matrix", "Cramer's Rule", "Jacobi", "Gaussian Elimination", "Gauss-Seidel"
     };
-
+    private Methods methods = new Methods(100);
     private JFrame frame;
     private JPanel methodPanel;
     private CardLayout cardLayout;
@@ -260,6 +266,15 @@ public class CalculatorApp {
         form.add(labeledField("Max Iterations", maxIter), "growx");
         panel.add(form);
         JButton calc = calcButton();
+        calc.addActionListener(e -> {
+            String funcStr = func.getText();
+            String guessStr = guess.getText();
+            String tolStr = tol.getText();
+            String maxIterStr = maxIter.getText();
+            methods.setMaxIteration(Integer.parseInt(maxIterStr));
+            methods.setTolerance(new BigDecimal(tolStr));
+            System.out.println(methods.fixedPoint(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>()));
+        });
         panel.add(calc, "align left, gaptop 10");
         return panel;
     }
@@ -290,6 +305,15 @@ public class CalculatorApp {
         form.add(labeledField("Max Iterations", maxIter), "growx");
         panel.add(form);
         JButton calc = calcButton();
+        calc.addActionListener(e -> {
+            String funcStr = func.getText();
+            String guessStr = guess.getText();
+            String tolStr = tol.getText();
+            String maxIterStr = maxIter.getText();
+            methods.setMaxIteration(Integer.parseInt(maxIterStr));
+            methods.setTolerance(new BigDecimal(tolStr));
+            System.out.println(methods.newtonRaphson(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>()));
+        });
         panel.add(calc, "align left, gaptop 10");
         return panel;
     }

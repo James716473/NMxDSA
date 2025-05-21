@@ -3,7 +3,7 @@ echo Building project...
 
 if not exist "lib" (
     echo Error: lib directory not found!
-    echo Please ensure you have the exp4j library in the lib directory
+    echo Please ensure you have the required libraries in the lib directory
     pause
     exit /b 1
 )
@@ -19,11 +19,14 @@ if errorlevel 1 (
 )
 
 echo Running application...
-java -cp "lib/*;bin" CalculatorApp
+cd bin
+java -cp ".;../lib/*" CalculatorApp
 if errorlevel 1 (
     echo Application execution failed!
+    cd ..
     pause
     exit /b 1
 )
+cd ..
 
 pause

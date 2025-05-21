@@ -107,14 +107,7 @@ public class CalculatorApp {
         JScrollPane scroll = new JScrollPane(historyList);
         scroll.setPreferredSize(new Dimension(800, 400));
         panel.add(scroll, "growx, growy");
-        // Example static history
-        if (historyListModel.isEmpty()) {
-            historyListModel.addElement("x = cos(x)");
-            historyListModel.addElement("x^3 - 2*x - 5");
-            historyListModel.addElement("x^2 - 4");
-            historyListModel.addElement("x^3 - x - 1");
-            historyListModel.addElement("x^2 - 3");
-        }
+        
         
         return panel;
     }
@@ -279,6 +272,7 @@ public class CalculatorApp {
             methods.setMaxIteration(Integer.parseInt(maxIterStr));
             methods.setTolerance(new BigDecimal(tolStr));
             history.push(methods.fixedPoint(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>()));
+            historyListModel.insertElementAt(funcStr, 0);
             System.out.println(methods.fixedPoint(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>()));
         });
         panel.add(calc, "align left, gaptop 10");
@@ -318,6 +312,7 @@ public class CalculatorApp {
             String maxIterStr = maxIter.getText();
             methods.setMaxIteration(Integer.parseInt(maxIterStr));
             methods.setTolerance(new BigDecimal(tolStr));
+            historyListModel.insertElementAt(funcStr, 0);
             history.push(methods.newtonRaphson(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>()));
             System.out.println(methods.newtonRaphson(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>()));
         });
@@ -362,6 +357,7 @@ public class CalculatorApp {
             String maxIterStr = maxIter.getText();
             methods.setMaxIteration(Integer.parseInt(maxIterStr));
             methods.setTolerance(new BigDecimal(tolStr));
+            historyListModel.insertElementAt(funcStr, 0);
             history.push(methods.secant(methods.parseEquation(funcStr), Double.parseDouble(x0Str), Double.parseDouble(x1Str), new LinkedList<Double>()));
             System.out.println(methods.secant(methods.parseEquation(funcStr), Double.parseDouble(x0Str), Double.parseDouble(x1Str), new LinkedList<Double>()));
         });
@@ -406,6 +402,7 @@ public class CalculatorApp {
             String maxIterStr = maxIter.getText();
             methods.setMaxIteration(Integer.parseInt(maxIterStr));
             methods.setTolerance(new BigDecimal(tolStr));
+            historyListModel.insertElementAt(funcStr, 0);
             history.push(methods.bisection(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>()));
             System.out.println(methods.bisection(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>()));
         });
@@ -450,6 +447,7 @@ public class CalculatorApp {
             String maxIterStr = maxIter.getText();
             methods.setMaxIteration(Integer.parseInt(maxIterStr));
             methods.setTolerance(new BigDecimal(tolStr));
+            historyListModel.insertElementAt(funcStr, 0);
             history.push(methods.falsePosition(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>()));
             System.out.println(methods.falsePosition(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>()));
         });

@@ -242,17 +242,19 @@ public class CalculatorApp {
     }
 
     private JPanel fixedPointPanel() {
-        JPanel panel = new JPanel(new MigLayout("wrap 1, fillx, insets 20 30 20 20", "[grow]", "[]10[]10[]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2, fillx, insets 20 30 20 20", "[grow][grow]", "[]10[]10[]"));
         panel.setBackground(new Color(0xF7F3F0));
         JLabel header = new JLabel("Fixed-Point Iteration Method");
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
-        panel.add(header);
+        panel.add(header, "span 2");
         JLabel desc = new JLabel("This method solves equations of the form x = g(x) by iteratively computing x₁ = g(x₀), x₂ = g(x₁), etc.");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
-        panel.add(desc);
-        JPanel form = new JPanel(new MigLayout("fillx, wrap 1, gap 10", "[grow]"));
-        form.setBackground(new Color(0xF7F3F0));
+        panel.add(desc, "span 2");
+
+        // Left side - Input form
+        JPanel leftPanel = new JPanel(new MigLayout("wrap 1, gap 10", "[]", "[]"));
+        leftPanel.setBackground(new Color(0xF7F3F0));
         JTextField func = new JTextField("x = cos(x)", 32);
         JTextField guess = new JTextField(32);
         JTextField tol = new JTextField(32);
@@ -261,37 +263,67 @@ public class CalculatorApp {
         guess.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
         tol.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
         maxIter.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
-        form.add(labeledField("Function (in form x = g(x))", func), "growx");
-        form.add(labeledField("Initial Guess", guess), "growx");
-        form.add(labeledField("Tolerance", tol), "growx");
-        form.add(labeledField("Max Iterations", maxIter), "growx");
-        panel.add(form);
-        JButton calc = calcButton(); // calc is short for calculator btw
+        leftPanel.add(labeledField("Function (in form x = g(x))", func), "");
+        leftPanel.add(labeledField("Initial Guess", guess), "");
+        leftPanel.add(labeledField("Tolerance", tol), "");
+        leftPanel.add(labeledField("Max Iterations", maxIter), "");
+        panel.add(leftPanel, "grow");
+
+        // Right side - Solution display
+        JPanel rightPanel = new JPanel(new MigLayout("fillx, wrap 1, gap 10", "[grow]", "[][][grow]"));
+        rightPanel.setBackground(new Color(0xF7F3F0));
+        JLabel solutionLabel = new JLabel("Solution:");
+        solutionLabel.setFont(new Font("Bodoni MT", Font.BOLD, 14));
+        rightPanel.add(solutionLabel);
+        
+        JTextArea solution = new JTextArea(20, 30);
+        solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        solution.setEditable(false);
+        solution.setLineWrap(true);
+        solution.setWrapStyleWord(true);
+        solution.setBorder(BorderFactory.createCompoundBorder(
+            new RoundedBorder(12),
+            BorderFactory.createEmptyBorder(8, 6, 8, 6)
+        ));
+        solution.setBackground(new Color(0xFFFAF7));
+        JScrollPane solutionScroll = new JScrollPane(solution);
+        solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        rightPanel.add(solutionScroll, "grow");
+        panel.add(rightPanel, "grow");
+
+        JButton calc = calcButton();
         calc.addActionListener(e -> {
             String funcStr = func.getText();
             String guessStr = guess.getText();
             String tolStr = tol.getText();
             String maxIterStr = maxIter.getText();
-            methods.setMaxIteration(Integer.parseInt(maxIterStr));
-            methods.setTolerance(new BigDecimal(tolStr));
-            System.out.println(methods.fixedPoint(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>()));
+            try {
+                methods.setMaxIteration(Integer.parseInt(maxIterStr));
+                methods.setTolerance(new BigDecimal(tolStr));
+                String result = methods.fixedPoint(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>()).toString();
+                solution.setText("Result:\n" + result);
+            } catch (Exception ex) {
+                solution.setText("Error:\n" + ex.getMessage());
+            }
         });
-        panel.add(calc, "align left, gaptop 10");
+        panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
     }
 
     private JPanel newtonRaphsonPanel() {
-        JPanel panel = new JPanel(new MigLayout("wrap 1, fillx, insets 20 30 20 20", "[grow]", "[]10[]10[]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2, fillx, insets 20 30 20 20", "[grow][grow]", "[]10[]10[]"));
         panel.setBackground(new Color(0xF7F3F0));
         JLabel header = new JLabel("Newton-Raphson Method");
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
-        panel.add(header);
+        panel.add(header, "span 2");
         JLabel desc = new JLabel("The Newton-Raphson method uses the formula x₁ = x₀ - f(x₀)/f'(x₀) to approximate roots of equations.");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
-        panel.add(desc);
-        JPanel form = new JPanel(new MigLayout("fillx, wrap 1, gap 10", "[grow]"));
-        form.setBackground(new Color(0xF7F3F0));
+        panel.add(desc, "span 2");
+
+        // Left side - Input form
+        JPanel leftPanel = new JPanel(new MigLayout("wrap 1, gap 10", "[]", "[]"));
+        leftPanel.setBackground(new Color(0xF7F3F0));
         JTextField func = new JTextField("x^3 - 2*x - 5", 32);
         JTextField guess = new JTextField(32);
         JTextField tol = new JTextField(32);
@@ -300,37 +332,67 @@ public class CalculatorApp {
         guess.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
         tol.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
         maxIter.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
-        form.add(labeledField("Function f(x)", func), "growx");
-        form.add(labeledField("Initial Guess", guess), "growx");
-        form.add(labeledField("Tolerance", tol), "growx");
-        form.add(labeledField("Max Iterations", maxIter), "growx");
-        panel.add(form);
-        JButton calc = calcButton(); // calc is short for calculator btw
+        leftPanel.add(labeledField("Function f(x)", func), "");
+        leftPanel.add(labeledField("Initial Guess", guess), "");
+        leftPanel.add(labeledField("Tolerance", tol), "");
+        leftPanel.add(labeledField("Max Iterations", maxIter), "");
+        panel.add(leftPanel, "grow");
+
+        // Right side - Solution display
+        JPanel rightPanel = new JPanel(new MigLayout("fillx, wrap 1, gap 10", "[grow]", "[][][grow]"));
+        rightPanel.setBackground(new Color(0xF7F3F0));
+        JLabel solutionLabel = new JLabel("Solution:");
+        solutionLabel.setFont(new Font("Bodoni MT", Font.BOLD, 14));
+        rightPanel.add(solutionLabel);
+        
+        JTextArea solution = new JTextArea(20, 30);
+        solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        solution.setEditable(false);
+        solution.setLineWrap(true);
+        solution.setWrapStyleWord(true);
+        solution.setBorder(BorderFactory.createCompoundBorder(
+            new RoundedBorder(12),
+            BorderFactory.createEmptyBorder(8, 6, 8, 6)
+        ));
+        solution.setBackground(new Color(0xFFFAF7));
+        JScrollPane solutionScroll = new JScrollPane(solution);
+        solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        rightPanel.add(solutionScroll, "grow");
+        panel.add(rightPanel, "grow");
+
+        JButton calc = calcButton();
         calc.addActionListener(e -> {
             String funcStr = func.getText();
             String guessStr = guess.getText();
             String tolStr = tol.getText();
             String maxIterStr = maxIter.getText();
-            methods.setMaxIteration(Integer.parseInt(maxIterStr));
-            methods.setTolerance(new BigDecimal(tolStr));
-            System.out.println(methods.newtonRaphson(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>()));
+            try {
+                methods.setMaxIteration(Integer.parseInt(maxIterStr));
+                methods.setTolerance(new BigDecimal(tolStr));
+                String result = methods.newtonRaphson(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>()).toString();
+                solution.setText("Result:\n" + result);
+            } catch (Exception ex) {
+                solution.setText("Error:\n" + ex.getMessage());
+            }
         });
-        panel.add(calc, "align left, gaptop 10");
+        panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
     }
 
     private JPanel secantPanel() {
-        JPanel panel = new JPanel(new MigLayout("wrap 1, fillx, insets 20 30 20 20", "[grow]", "[]10[]10[]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2, fillx, insets 20 30 20 20", "[grow][grow]", "[]10[]10[]"));
         panel.setBackground(new Color(0xF7F3F0));
         JLabel header = new JLabel("Secant Method");
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
-        panel.add(header);
+        panel.add(header, "span 2");
         JLabel desc = new JLabel("The secant method uses the formula x₂ = x₁ - f(x₁)(x₁ - x₀)/(f(x₁) - f(x₀)) to approximate roots.");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
-        panel.add(desc);
-        JPanel form = new JPanel(new MigLayout("fillx, wrap 1, gap 10", "[grow]"));
-        form.setBackground(new Color(0xF7F3F0));
+        panel.add(desc, "span 2");
+
+        // Left side - Input form
+        JPanel leftPanel = new JPanel(new MigLayout("wrap 1, gap 10", "[]", "[]"));
+        leftPanel.setBackground(new Color(0xF7F3F0));
         JTextField func = new JTextField("x^2 - 4", 32);
         JTextField x0 = new JTextField(32);
         JTextField x1 = new JTextField(32);
@@ -341,39 +403,69 @@ public class CalculatorApp {
         x1.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
         tol.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
         maxIter.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
-        form.add(labeledField("Function f(x)", func), "growx");
-        form.add(labeledField("Initial Guess (x₀)", x0), "growx");
-        form.add(labeledField("Initial Guess (x₁)", x1), "growx");
-        form.add(labeledField("Tolerance", tol), "growx");
-        form.add(labeledField("Max Iterations", maxIter), "growx");
-        panel.add(form);
-        JButton calc = calcButton(); // calc is short for calculator btw
+        leftPanel.add(labeledField("Function f(x)", func), "");
+        leftPanel.add(labeledField("Initial Guess (x₀)", x0), "");
+        leftPanel.add(labeledField("Initial Guess (x₁)", x1), "");
+        leftPanel.add(labeledField("Tolerance", tol), "");
+        leftPanel.add(labeledField("Max Iterations", maxIter), "");
+        panel.add(leftPanel, "grow");
+
+        // Right side - Solution display
+        JPanel rightPanel = new JPanel(new MigLayout("fillx, wrap 1, gap 10", "[grow]", "[][][grow]"));
+        rightPanel.setBackground(new Color(0xF7F3F0));
+        JLabel solutionLabel = new JLabel("Solution:");
+        solutionLabel.setFont(new Font("Bodoni MT", Font.BOLD, 14));
+        rightPanel.add(solutionLabel);
+        
+        JTextArea solution = new JTextArea(20, 30);
+        solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        solution.setEditable(false);
+        solution.setLineWrap(true);
+        solution.setWrapStyleWord(true);
+        solution.setBorder(BorderFactory.createCompoundBorder(
+            new RoundedBorder(12),
+            BorderFactory.createEmptyBorder(8, 6, 8, 6)
+        ));
+        solution.setBackground(new Color(0xFFFAF7));
+        JScrollPane solutionScroll = new JScrollPane(solution);
+        solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        rightPanel.add(solutionScroll, "grow");
+        panel.add(rightPanel, "grow");
+
+        JButton calc = calcButton();
         calc.addActionListener(e -> {
             String funcStr = func.getText();
             String x0Str = x0.getText();
             String x1Str = x1.getText();
             String tolStr = tol.getText();
             String maxIterStr = maxIter.getText();
-            methods.setMaxIteration(Integer.parseInt(maxIterStr));
-            methods.setTolerance(new BigDecimal(tolStr));
-            System.out.println(methods.secant(methods.parseEquation(funcStr), Double.parseDouble(x0Str), Double.parseDouble(x1Str), new LinkedList<Double>()));
+            try {
+                methods.setMaxIteration(Integer.parseInt(maxIterStr));
+                methods.setTolerance(new BigDecimal(tolStr));
+                String result = methods.secant(methods.parseEquation(funcStr), Double.parseDouble(x0Str), Double.parseDouble(x1Str), new LinkedList<Double>()).toString();
+                solution.setText("Result:\n" + result);
+            } catch (Exception ex) {
+                solution.setText("Error:\n" + ex.getMessage());
+            }
         });
-        panel.add(calc, "align left, gaptop 10");
+        panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
     }
 
     private JPanel bisectionPanel() {
-        JPanel panel = new JPanel(new MigLayout("wrap 1, fillx, insets 20 30 20 20", "[grow]", "[]10[]10[]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2, fillx, insets 20 30 20 20", "[grow][grow]", "[]10[]10[]"));
         panel.setBackground(new Color(0xF7F3F0));
         JLabel header = new JLabel("Bisection Method");
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
-        panel.add(header);
+        panel.add(header, "span 2");
         JLabel desc = new JLabel("The bisection method finds a root by repeatedly dividing an interval and selecting the subinterval where the function changes sign.");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
-        panel.add(desc);
-        JPanel form = new JPanel(new MigLayout("fillx, wrap 1, gap 10", "[grow]"));
-        form.setBackground(new Color(0xF7F3F0));
+        panel.add(desc, "span 2");
+
+        // Left side - Input form
+        JPanel leftPanel = new JPanel(new MigLayout("wrap 1, gap 10", "[]", "[]"));
+        leftPanel.setBackground(new Color(0xF7F3F0));
         JTextField func = new JTextField("x^3 - x - 1", 32);
         JTextField a = new JTextField(32);
         JTextField b = new JTextField(32);
@@ -384,39 +476,69 @@ public class CalculatorApp {
         b.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
         tol.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
         maxIter.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
-        form.add(labeledField("Function f(x)", func), "growx");
-        form.add(labeledField("Initial Guess (x₀)", a), "growx");
-        form.add(labeledField("Initial Guess (x₁)", b), "growx");
-        form.add(labeledField("Tolerance", tol), "growx");
-        form.add(labeledField("Max Iterations", maxIter), "growx");
-        panel.add(form);
-        JButton calc = calcButton(); // calc is short for calculator btw
+        leftPanel.add(labeledField("Function f(x)", func), "");
+        leftPanel.add(labeledField("Initial Guess (x₀)", a), "");
+        leftPanel.add(labeledField("Initial Guess (x₁)", b), "");
+        leftPanel.add(labeledField("Tolerance", tol), "");
+        leftPanel.add(labeledField("Max Iterations", maxIter), "");
+        panel.add(leftPanel, "grow");
+
+        // Right side - Solution display
+        JPanel rightPanel = new JPanel(new MigLayout("fillx, wrap 1, gap 10", "[grow]", "[][][grow]"));
+        rightPanel.setBackground(new Color(0xF7F3F0));
+        JLabel solutionLabel = new JLabel("Solution:");
+        solutionLabel.setFont(new Font("Bodoni MT", Font.BOLD, 14));
+        rightPanel.add(solutionLabel);
+        
+        JTextArea solution = new JTextArea(20, 30);
+        solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        solution.setEditable(false);
+        solution.setLineWrap(true);
+        solution.setWrapStyleWord(true);
+        solution.setBorder(BorderFactory.createCompoundBorder(
+            new RoundedBorder(12),
+            BorderFactory.createEmptyBorder(8, 6, 8, 6)
+        ));
+        solution.setBackground(new Color(0xFFFAF7));
+        JScrollPane solutionScroll = new JScrollPane(solution);
+        solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        rightPanel.add(solutionScroll, "grow");
+        panel.add(rightPanel, "grow");
+
+        JButton calc = calcButton();
         calc.addActionListener(e -> {
             String funcStr = func.getText();
             String aStr = a.getText();
             String bStr = b.getText();
             String tolStr = tol.getText();
             String maxIterStr = maxIter.getText();
-            methods.setMaxIteration(Integer.parseInt(maxIterStr));
-            methods.setTolerance(new BigDecimal(tolStr));
-            System.out.println(methods.bisection(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>()));
+            try {
+                methods.setMaxIteration(Integer.parseInt(maxIterStr));
+                methods.setTolerance(new BigDecimal(tolStr));
+                String result = methods.bisection(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>()).toString();
+                solution.setText("Result:\n" + result);
+            } catch (Exception ex) {
+                solution.setText("Error:\n" + ex.getMessage());
+            }
         });
-        panel.add(calc, "align left, gaptop 10");
+        panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
     }
 
     private JPanel falsePositionPanel() {
-        JPanel panel = new JPanel(new MigLayout("wrap 1, fillx, insets 20 30 20 20", "[grow]", "[]10[]10[]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2, fillx, insets 20 30 20 20", "[grow][grow]", "[]10[]10[]"));
         panel.setBackground(new Color(0xF7F3F0));
         JLabel header = new JLabel("False Position Method");
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
-        panel.add(header);
+        panel.add(header, "span 2");
         JLabel desc = new JLabel("The false position (regula falsi) method uses linear interpolation to find improved approximations to the roots.");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
-        panel.add(desc);
-        JPanel form = new JPanel(new MigLayout("fillx, wrap 1, gap 10", "[grow]"));
-        form.setBackground(new Color(0xF7F3F0));
+        panel.add(desc, "span 2");
+
+        // Left side - Input form
+        JPanel leftPanel = new JPanel(new MigLayout("wrap 1, gap 10", "[]", "[]"));
+        leftPanel.setBackground(new Color(0xF7F3F0));
         JTextField func = new JTextField("x^2 - 3", 32);
         JTextField a = new JTextField(32);
         JTextField b = new JTextField(32);
@@ -427,37 +549,69 @@ public class CalculatorApp {
         b.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
         tol.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
         maxIter.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
-        form.add(labeledField("Function f(x)", func), "growx");
-        form.add(labeledField("Initial Guess (x₀)", a), "growx");
-        form.add(labeledField("Initial Guess (x₁)", b), "growx");
-        form.add(labeledField("Tolerance", tol), "growx");
-        form.add(labeledField("Max Iterations", maxIter), "growx");
-        panel.add(form);
-        JButton calc = calcButton(); // calc is short for calculator btw
+        leftPanel.add(labeledField("Function f(x)", func), "");
+        leftPanel.add(labeledField("Initial Guess (x₀)", a), "");
+        leftPanel.add(labeledField("Initial Guess (x₁)", b), "");
+        leftPanel.add(labeledField("Tolerance", tol), "");
+        leftPanel.add(labeledField("Max Iterations", maxIter), "");
+        panel.add(leftPanel, "grow");
+
+        // Right side - Solution display
+        JPanel rightPanel = new JPanel(new MigLayout("fillx, wrap 1, gap 10", "[grow]", "[][][grow]"));
+        rightPanel.setBackground(new Color(0xF7F3F0));
+        JLabel solutionLabel = new JLabel("Solution:");
+        solutionLabel.setFont(new Font("Bodoni MT", Font.BOLD, 14));
+        rightPanel.add(solutionLabel);
+        
+        JTextArea solution = new JTextArea(20, 30);
+        solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        solution.setEditable(false);
+        solution.setLineWrap(true);
+        solution.setWrapStyleWord(true);
+        solution.setBorder(BorderFactory.createCompoundBorder(
+            new RoundedBorder(12),
+            BorderFactory.createEmptyBorder(8, 6, 8, 6)
+        ));
+        solution.setBackground(new Color(0xFFFAF7));
+        JScrollPane solutionScroll = new JScrollPane(solution);
+        solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        rightPanel.add(solutionScroll, "grow");
+        panel.add(rightPanel, "grow");
+
+        JButton calc = calcButton();
         calc.addActionListener(e -> {
             String funcStr = func.getText();
             String aStr = a.getText();
             String bStr = b.getText();
             String tolStr = tol.getText();
             String maxIterStr = maxIter.getText();
-            methods.setMaxIteration(Integer.parseInt(maxIterStr));
-            methods.setTolerance(new BigDecimal(tolStr));
-            System.out.println(methods.falsePosition(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>()));
+            try {
+                methods.setMaxIteration(Integer.parseInt(maxIterStr));
+                methods.setTolerance(new BigDecimal(tolStr));
+                String result = methods.falsePosition(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>()).toString();
+                solution.setText("Result:\n" + result);
+            } catch (Exception ex) {
+                solution.setText("Error:\n" + ex.getMessage());
+            }
         });
-        panel.add(calc, "align left, gaptop 10");
+        panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
     }
 
     private JPanel equationInputPanel(String methodName) {
-        JPanel panel = new JPanel(new MigLayout("wrap 1, fillx, insets 20 30 20 20", "[grow]", "[]10[]10[]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2, fillx, insets 20 30 20 20", "[grow][grow]", "[]10[]10[]"));
         panel.setBackground(new Color(0xF7F3F0));
         JLabel header = new JLabel(methodName);
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
-        panel.add(header);
+        panel.add(header, "span 2");
         JLabel desc = new JLabel("Input equations as strings, one per line.");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
-        panel.add(desc);
+        panel.add(desc, "span 2");
+
+        // Left side - Input form
+        JPanel leftPanel = new JPanel(new MigLayout("wrap 1, gap 10", "[]", "[]"));
+        leftPanel.setBackground(new Color(0xF7F3F0));
         JTextArea equations = new JTextArea(3, 40);
         equations.setFont(new Font("Monospaced", Font.PLAIN, 15));
         equations.setLineWrap(true);
@@ -497,8 +651,8 @@ public class CalculatorApp {
                 }
             }
             private boolean allLinesWithinLimit(String text) {
-                if (text.isEmpty()) return true; // allow empty
-                String[] lines = text.split("\\r?\\n", -1); // -1 to include trailing empty lines
+                if (text.isEmpty()) return true;
+                String[] lines = text.split("\\r?\\n", -1);
                 if (lines.length > MAX_LINES) return false;
                 for (String line : lines) {
                     if (line.length() > MAX_COLS) return false;
@@ -510,9 +664,73 @@ public class CalculatorApp {
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         scroll.setPreferredSize(equations.getPreferredSize());
-        panel.add(scroll, "align left");
-        JButton calc = calcButton(); // calc is short for calculator btw
-        panel.add(calc, "align left, gaptop 10");
+        leftPanel.add(scroll, "align left");
+        panel.add(leftPanel, "grow");
+
+        // Right side - Solution display
+        JPanel rightPanel = new JPanel(new MigLayout("fillx, wrap 1, gap 10", "[grow]", "[][][grow]"));
+        rightPanel.setBackground(new Color(0xF7F3F0));
+        JLabel solutionLabel = new JLabel("Solution:");
+        solutionLabel.setFont(new Font("Bodoni MT", Font.BOLD, 14));
+        rightPanel.add(solutionLabel);
+        
+        JTextArea solution = new JTextArea(20, 30);
+        solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        solution.setEditable(false);
+        solution.setLineWrap(true);
+        solution.setWrapStyleWord(true);
+        solution.setBorder(BorderFactory.createCompoundBorder(
+            new RoundedBorder(12),
+            BorderFactory.createEmptyBorder(8, 6, 8, 6)
+        ));
+        solution.setBackground(new Color(0xFFFAF7));
+        JScrollPane solutionScroll = new JScrollPane(solution);
+        solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        rightPanel.add(solutionScroll, "grow");
+        panel.add(rightPanel, "grow");
+
+        JButton calc = calcButton();
+        calc.addActionListener(e -> {
+            try {
+                String[] eqns = equations.getText().split("\\n");
+                StringBuilder result = new StringBuilder("Result:\n");
+                if (methodName.equals("Matrix Method")) {
+                    // Parse equations into matrix form
+                    double[][] matrix = parseEquationsToMatrix(eqns);
+                    result.append(methods.cramer(matrix));
+                } else if (methodName.equals("Cramer's Rule")) {
+                    // Parse equations into matrix form
+                    double[][] matrix = parseEquationsToMatrix(eqns);
+                    result.append(methods.cramer(matrix));
+                } else if (methodName.equals("Jacobi Method")) {
+                    // Parse equations into matrix and initial guess
+                    double[][] matrix = parseEquationsToMatrix(eqns);
+                    List<Double[]> initialGuess = new ArrayList<>();
+                    // Add a default initial guess of zeros
+                    Double[] guess = new Double[matrix.length];
+                    Arrays.fill(guess, 0.0);
+                    initialGuess.add(guess);
+                    result.append(methods.jacobi(matrix, initialGuess));
+                } else if (methodName.equals("Gaussian Elimination")) {
+                    // Parse equations into matrix form
+                    double[][] matrix = parseEquationsToMatrix(eqns);
+                    result.append(methods.cramer(matrix));
+                } else if (methodName.equals("Gauss-Seidel Method")) {
+                    // Parse equations into matrix and initial guess
+                    double[][] matrix = parseEquationsToMatrix(eqns);
+                    List<Double[]> initialGuess = new ArrayList<>();
+                    // Add a default initial guess of zeros
+                    Double[] guess = new Double[matrix.length];
+                    Arrays.fill(guess, 0.0);
+                    initialGuess.add(guess);
+                    result.append(methods.gaussSeidel(matrix, initialGuess));
+                }
+                solution.setText(result.toString());
+            } catch (Exception ex) {
+                solution.setText("Error:\n" + ex.getMessage());
+            }
+        });
+        panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
     }
 
@@ -574,21 +792,25 @@ public class CalculatorApp {
     }
 
     private JPanel matrixInputPanel() {
-        JPanel panel = new JPanel(new MigLayout("wrap 2, insets 20 30 20 20, gapx 10", "[][grow]", "[]10[]10[]"));
+        JPanel panel = new JPanel(new MigLayout("wrap 2, insets 20 30 20 20, gapx 10", "[grow][grow]", "[]10[]10[]"));
         panel.setBackground(new Color(0xF7F3F0));
         JLabel header = new JLabel("Matrix Method");
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
-        panel.add(header, "span 2, wrap");
+        panel.add(header, "span 2");
         JLabel desc = new JLabel("Enter your matrix A (separated by ENTER) and vector B (separated by SPACE) below.");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
         panel.add(desc, "span 2, wrap, gapbottom 10");
+
+        // Left side - Input form
+        JPanel leftPanel = new JPanel(new MigLayout("fillx, wrap 2, gap 10", "[][grow]"));
+        leftPanel.setBackground(new Color(0xF7F3F0));
 
         // Label and text area for A (tall, narrow)
         JLabel labelA = new JLabel("A =");
         labelA.setFont(new Font("Bodoni MT", Font.BOLD, 18));
         labelA.setHorizontalAlignment(SwingConstants.RIGHT);
-        JTextArea areaA = new RoundedTextArea(3, 7, 32); // 3 rows, 8 columns, 32px arc
+        JTextArea areaA = new RoundedTextArea(3, 7, 32);
         areaA.setFont(new Font("Monospaced", Font.PLAIN, 16));
         areaA.setLineWrap(true);
         areaA.setWrapStyleWord(true);
@@ -598,7 +820,7 @@ public class CalculatorApp {
         ));
         areaA.setBackground(Color.WHITE);
         int rowHeight = areaA.getFontMetrics(areaA.getFont()).getHeight();
-        int areaAHeight = rowHeight * 3 + 24; // 3 rows + padding
+        int areaAHeight = rowHeight * 3 + 24;
         areaA.setPreferredSize(new Dimension(90, areaAHeight));
         // Limit to 6 lines, 8 columns
         ((javax.swing.text.AbstractDocument) areaA.getDocument()).setDocumentFilter(new javax.swing.text.DocumentFilter() {
@@ -641,7 +863,7 @@ public class CalculatorApp {
         JLabel labelB = new JLabel("B =");
         labelB.setFont(new Font("Bodoni MT", Font.PLAIN, 18));
         labelB.setHorizontalAlignment(SwingConstants.RIGHT);
-        JTextArea areaB = new RoundedTextArea(1, 30, 32); // 1 row, 30 columns, 32px arc
+        JTextArea areaB = new RoundedTextArea(1, 30, 32);
         areaB.setFont(new Font("Monospaced", Font.PLAIN, 16));
         areaB.setLineWrap(true);
         areaB.setWrapStyleWord(true);
@@ -688,24 +910,84 @@ public class CalculatorApp {
         scrollB.setOpaque(false);
         scrollB.getViewport().setOpaque(false);
 
-        // Add to panel
-        JPanel aPanel = new JPanel(new BorderLayout());
-        aPanel.setBackground(new Color(0xF7F3F0));
-        aPanel.setOpaque(false);
-        aPanel.add(scrollA, BorderLayout.CENTER);
-        panel.add(labelA, "align right, aligny center, gapx 15");
-        panel.add(aPanel, "align left, gapbottom 0, wrap");
+        // Add to left panel
+        leftPanel.add(labelA, "align right, aligny center, gapx 15");
+        leftPanel.add(scrollA, "wrap");
+        leftPanel.add(labelB, "align right, gapy 20, gapx 15");
+        leftPanel.add(scrollB, "gaptop 20");
+        panel.add(leftPanel, "grow");
 
-        JPanel bPanel = new JPanel(new BorderLayout());
-        bPanel.setBackground(new Color(0xF7F3F0));
-        bPanel.setOpaque(false);
-        bPanel.add(scrollB, BorderLayout.CENTER);
-        panel.add(labelB, "align right, gapy 20, gapx 15");
-        panel.add(bPanel, "align left, gaptop 20, wrap");
+        // Right side - Solution display
+        JPanel rightPanel = new JPanel(new MigLayout("fillx, wrap 1, gap 10", "[grow]"));
+        rightPanel.setBackground(new Color(0xF7F3F0));
+        JLabel solutionLabel = new JLabel("Solution:");
+        solutionLabel.setFont(new Font("Bodoni MT", Font.BOLD, 14));
+        rightPanel.add(solutionLabel);
+        
+        JTextArea solution = new JTextArea(20, 30);
+        solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        solution.setEditable(false);
+        solution.setLineWrap(true);
+        solution.setWrapStyleWord(true);
+        solution.setBorder(BorderFactory.createCompoundBorder(
+            new RoundedBorder(12),
+            BorderFactory.createEmptyBorder(8, 6, 8, 6)
+        ));
+        solution.setBackground(new Color(0xFFFAF7));
+        JScrollPane solutionScroll = new JScrollPane(solution);
+        solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        rightPanel.add(solutionScroll, "grow");
+        panel.add(rightPanel, "grow");
 
-        JButton calc = calcButton(); // calc is short for calculator btw
+        JButton calc = calcButton();
+        calc.addActionListener(e -> {
+            try {
+                // Parse matrix A
+                String[] matrixARows = areaA.getText().split("\\n");
+                double[][] matrixA = new double[matrixARows.length][];
+                for (int i = 0; i < matrixARows.length; i++) {
+                    String[] values = matrixARows[i].trim().split("\\s+");
+                    matrixA[i] = new double[values.length];
+                    for (int j = 0; j < values.length; j++) {
+                        matrixA[i][j] = Double.parseDouble(values[j]);
+                    }
+                }
+
+                // Parse vector B
+                String[] vectorBValues = areaB.getText().trim().split("\\s+");
+                double[] vectorB = new double[vectorBValues.length];
+                for (int i = 0; i < vectorBValues.length; i++) {
+                    vectorB[i] = Double.parseDouble(vectorBValues[i]);
+                }
+
+                // Solve using matrix method
+                double[][] augmentedMatrix = new double[matrixA.length][matrixA[0].length + 1];
+                // Copy matrix A
+                for (int i = 0; i < matrixA.length; i++) {
+                    System.arraycopy(matrixA[i], 0, augmentedMatrix[i], 0, matrixA[i].length);
+                    // Add vector B as the last column
+                    augmentedMatrix[i][matrixA[i].length] = vectorB[i];
+                }
+                String result = methods.cramer(augmentedMatrix).toString();
+                solution.setText("Result:\n" + result);
+            } catch (Exception ex) {
+                solution.setText("Error:\n" + ex.getMessage());
+            }
+        });
         panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
+    }
+
+    // Helper method to parse equations into matrix form
+    private double[][] parseEquationsToMatrix(String[] equations) {
+        double[][] matrix = new double[equations.length][equations.length + 1];
+        for (int i = 0; i < equations.length; i++) {
+            String[] parts = equations[i].trim().split("\\s+");
+            for (int j = 0; j < parts.length; j++) {
+                matrix[i][j] = Double.parseDouble(parts[j]);
+            }
+        }
+        return matrix;
     }
 
     public static void main(String[] args) {

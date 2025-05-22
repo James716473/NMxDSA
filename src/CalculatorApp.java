@@ -116,8 +116,8 @@ public class CalculatorApp {
         JTextArea solutionArea = new JTextArea();
         solutionArea.setFont(new Font("Monospaced", Font.PLAIN, 16));
         solutionArea.setEditable(false);
-        solutionArea.setLineWrap(true);
-        solutionArea.setWrapStyleWord(true);
+        solutionArea.setLineWrap(false);
+        solutionArea.setWrapStyleWord(false);
         solutionArea.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -125,6 +125,7 @@ public class CalculatorApp {
         solutionArea.setBackground(Color.WHITE);
         JScrollPane scrollSolution = new JScrollPane(solutionArea);
         scrollSolution.setPreferredSize(new Dimension(600, 400));
+        scrollSolution.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         panel.add(scrollSolution, "grow, pushx, span 1");
 
         // Show solution when an equation is selected
@@ -294,7 +295,7 @@ public class CalculatorApp {
         // Left side - Input form
         JPanel leftPanel = new JPanel(new MigLayout("wrap 1, gap 10 2", "[]", "[]"));
         leftPanel.setBackground(new Color(0xF7F3F0));
-        JTextField func = new JTextField("x = cos(x)", 32);
+        JTextField func = new JTextField("e^-x", 32);
         JTextField guess = new JTextField(32);
         JTextField tol = new JTextField(32);
         JTextField maxIter = new JTextField(32);
@@ -318,8 +319,8 @@ public class CalculatorApp {
         JTextArea solution = new JTextArea(20, 30);
         solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
         solution.setEditable(false);
-        solution.setLineWrap(true);
-        solution.setWrapStyleWord(true);
+        solution.setLineWrap(false);
+        solution.setWrapStyleWord(false);
         solution.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -327,6 +328,7 @@ public class CalculatorApp {
         solution.setBackground(new Color(0xFFFAF7));
         JScrollPane solutionScroll = new JScrollPane(solution);
         solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        solutionScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         rightPanel.add(solutionScroll, "grow");
         panel.add(rightPanel, "grow");
 
@@ -351,9 +353,11 @@ public class CalculatorApp {
                 solutionStr += "x" + (i)  +" = " + funcStr.replace("x", "(" + answer.get(i) + ")") + "\n";
                 solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n\n";
             }
+            solutionStr += "Table\n";
             for(int i = 0; i < answer.size(); i++){
                 solutionStr += "Iteration No. " + i + ":\t\tx" + i + " = " + answer.get(i) + "\n";
             }
+            
             solution.setText(solutionStr);
             history.push(new Tuple<>(funcStr, solutionStr));
         });
@@ -375,7 +379,7 @@ public class CalculatorApp {
         // Left side - Input form
         JPanel leftPanel = new JPanel(new MigLayout("wrap 1, gap 10", "[]", "[]"));
         leftPanel.setBackground(new Color(0xF7F3F0));
-        JTextField func = new JTextField("x^3 - 2*x - 5", 32);
+        JTextField func = new JTextField("2^x - 5x + 2", 32);
         JTextField guess = new JTextField(32);
         JTextField tol = new JTextField(32);
         JTextField maxIter = new JTextField(32);
@@ -399,8 +403,8 @@ public class CalculatorApp {
         JTextArea solution = new JTextArea(20, 30);
         solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
         solution.setEditable(false);
-        solution.setLineWrap(true);
-        solution.setWrapStyleWord(true);
+        solution.setLineWrap(false);
+        solution.setWrapStyleWord(false);
         solution.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -408,6 +412,7 @@ public class CalculatorApp {
         solution.setBackground(new Color(0xFFFAF7));
         JScrollPane solutionScroll = new JScrollPane(solution);
         solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        solutionScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         rightPanel.add(solutionScroll, "grow");
         panel.add(rightPanel, "grow");
 
@@ -423,9 +428,20 @@ public class CalculatorApp {
             historyListModel.insertElementAt(funcStr, 0);
             List<Double> answer = methods.newtonRaphson(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>());
             
-            for(int i = 0; i < answer.size(); i++){
-                solution.append("x" + i +": " + answer.get(i) + "\n");
+            String solutionStr = "";
+            solutionStr += "Initial Guess:\n";
+            solutionStr += "x0: " + answer.get(0) + "\n\n";
+            for(int i = 1; i < answer.size(); i++){
+                solutionStr += "Iteration No. " + i + ":\n";
+                solutionStr += "x" + (i)  +" = " + answer.get(i-1) + " - (" + funcStr.replace("x", "(" + answer.get(i-1) + ")") + ") / ((d/dx)(" + funcStr.replace("x", "x" + (i-1)) + "))" + "\n";
+                solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n\n";
             }
+            solutionStr += "Table\n";
+            for(int i = 0; i < answer.size(); i++){
+                solutionStr += "Iteration No. " + i + ":\t\tx" + i + " = " + answer.get(i) + "\n";
+            }
+            solution.setText(solutionStr);
+            history.push(new Tuple<>(funcStr, solutionStr));
             System.out.println(answer);
         });
         panel.add(calc, "span 2, align left, gaptop 10");
@@ -446,7 +462,7 @@ public class CalculatorApp {
         // Left side - Input form
         JPanel leftPanel = new JPanel(new MigLayout("wrap 1, gap 10", "[]", "[]"));
         leftPanel.setBackground(new Color(0xF7F3F0));
-        JTextField func = new JTextField("x^2 - 4", 32);
+        JTextField func = new JTextField("x^3 - x - 1", 32);
         JTextField x0 = new JTextField(32);
         JTextField x1 = new JTextField(32);
         JTextField tol = new JTextField(32);
@@ -473,8 +489,8 @@ public class CalculatorApp {
         JTextArea solution = new JTextArea(20, 30);
         solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
         solution.setEditable(false);
-        solution.setLineWrap(true);
-        solution.setWrapStyleWord(true);
+        solution.setLineWrap(false);
+        solution.setWrapStyleWord(false);
         solution.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -482,6 +498,7 @@ public class CalculatorApp {
         solution.setBackground(new Color(0xFFFAF7));
         JScrollPane solutionScroll = new JScrollPane(solution);
         solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        solutionScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         rightPanel.add(solutionScroll, "grow");
         panel.add(rightPanel, "grow");
 
@@ -498,9 +515,21 @@ public class CalculatorApp {
             historyListModel.insertElementAt(funcStr, 0);
             List<Double> answer = methods.secant(methods.parseEquation(funcStr), Double.parseDouble(x0Str), Double.parseDouble(x1Str), new LinkedList<Double>());
             
-            for(int i = 0; i < answer.size(); i++){
-                solution.append("x" + i +": " + answer.get(i) + "\n");
+            String solutionStr = "";
+            solutionStr += "Initial Guesses:\n";
+            solutionStr += "x0: " + answer.get(0) + "\n";
+            solutionStr += "x1: " + answer.get(1) + "\n\n";
+            for(int i = 2; i < answer.size(); i++){
+                solutionStr += "Iteration No. " + (i-1) + ":\n";
+                solutionStr += "x" + (i)  +" = " + answer.get(i-1) + " - (" + funcStr.replace("x", "(" + answer.get(i-1) + ")") + ") * ((" + answer.get(i-1) + " - " + answer.get(i-2) + ") / (" + funcStr.replace("x", "(" + answer.get(i-1) + ")") + " - (" + funcStr.replace("x", "(" + answer.get(i-2) + ")") + "))" + "\n";
+                solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n\n";
             }
+            solutionStr += "Table\n";
+            for(int i = 0; i < answer.size() - 1; i++){
+                solutionStr += "Iteration No. " + i + ":\t\tx0 = " + answer.get(i) + "\t\tx1 = " + answer.get(i+1) + "\n";
+            }
+            solution.setText(solutionStr);
+            history.push(new Tuple<>(funcStr, solutionStr));
             System.out.println(answer);
         });
         panel.add(calc, "span 2, align left, gaptop 10");
@@ -521,7 +550,7 @@ public class CalculatorApp {
         // Left side - Input form
         JPanel leftPanel = new JPanel(new MigLayout("wrap 1, gap 10", "[]", "[]"));
         leftPanel.setBackground(new Color(0xF7F3F0));
-        JTextField func = new JTextField("x^3 - x - 1", 32);
+        JTextField func = new JTextField("x^3 + 4x^2 - 10", 32);
         JTextField a = new JTextField(32);
         JTextField b = new JTextField(32);
         JTextField tol = new JTextField(32);
@@ -548,8 +577,8 @@ public class CalculatorApp {
         JTextArea solution = new JTextArea(20, 30);
         solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
         solution.setEditable(false);
-        solution.setLineWrap(true);
-        solution.setWrapStyleWord(true);
+        solution.setLineWrap(false);
+        solution.setWrapStyleWord(false);
         solution.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -557,6 +586,7 @@ public class CalculatorApp {
         solution.setBackground(new Color(0xFFFAF7));
         JScrollPane solutionScroll = new JScrollPane(solution);
         solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        solutionScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         rightPanel.add(solutionScroll, "grow");
         panel.add(rightPanel, "grow");
 
@@ -573,9 +603,35 @@ public class CalculatorApp {
             historyListModel.insertElementAt(funcStr, 0);
             List<Tuple<Double, Double>> answer = methods.bisection(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>());
             
-            for(int i = 0; i < answer.size(); i++){
-                solution.append("x" + i +": " + answer.get(i).getX() + " " + answer.get(i).getY() + "\n");
+            String solutionStr = "";
+            solutionStr += "Initial Guesses:\n";
+            solutionStr += "xL: " + answer.get(0).getX() + "\t\txR: " + answer.get(0).getY() + "\n\n";
+            for(int i = 1; i < answer.size(); i++){
+                solutionStr += "Iteration No. " + (i) + ":\n";
+                solutionStr += "xM = (" + answer.get(i - 1).getX() + " + " + answer.get(i - 1).getY() + ") / 2" + "\n";
+                if(!answer.get(i).getX().equals(answer.get(i - 1).getX())){
+                    solutionStr += "xM = " + answer.get(i).getX() + "\n";
+                    solutionStr += "f(xM) = " +funcStr.replace("x", "(" + answer.get(i).getX() + ")") + "\n\n";
+                } else {
+                    solutionStr += "xM = " + answer.get(i).getY() + "\n";
+                    solutionStr += "f(xM) = " +funcStr.replace("x", "(" + answer.get(i).getY() + ")") + "\n\n";
+                }
+                
             }
+            solutionStr += "Table\n";
+            
+
+            for(int i = 1; i < answer.size(); i++){
+                solutionStr += "Iteration No. " + (i-1) + ":\t\txL = " + answer.get(i-1).getX() + "\t\txR = " + answer.get(i-1).getY();
+                if(!answer.get(i).getX().equals(answer.get(i - 1).getX())){
+                    solutionStr += "\t\txM = " + answer.get(i).getX() + "\n";
+                } else {
+                    solutionStr += "\t\txM = " + answer.get(i).getY() + "\n";
+                }
+            }
+            
+            solution.setText(solutionStr);
+            history.push(new Tuple<>(funcStr, solutionStr));
             System.out.println(answer);
         });
         panel.add(calc, "span 2, align left, gaptop 10");
@@ -596,7 +652,7 @@ public class CalculatorApp {
         // Left side - Input form
         JPanel leftPanel = new JPanel(new MigLayout("wrap 1, gap 10", "[]", "[]"));
         leftPanel.setBackground(new Color(0xF7F3F0));
-        JTextField func = new JTextField("x^2 - 3", 32);
+        JTextField func = new JTextField("x^3 - 4cos(x)", 32);
         JTextField a = new JTextField(32);
         JTextField b = new JTextField(32);
         JTextField tol = new JTextField(32);
@@ -623,8 +679,8 @@ public class CalculatorApp {
         JTextArea solution = new JTextArea(20, 30);
         solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
         solution.setEditable(false);
-        solution.setLineWrap(true);
-        solution.setWrapStyleWord(true);
+        solution.setLineWrap(false);
+        solution.setWrapStyleWord(false);
         solution.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -632,6 +688,7 @@ public class CalculatorApp {
         solution.setBackground(new Color(0xFFFAF7));
         JScrollPane solutionScroll = new JScrollPane(solution);
         solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        solutionScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         rightPanel.add(solutionScroll, "grow");
         panel.add(rightPanel, "grow");
 
@@ -648,9 +705,17 @@ public class CalculatorApp {
             historyListModel.insertElementAt(funcStr, 0);
             List<Tuple<Double, Double>> answer = methods.falsePosition(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>());
             
-            for(int i = 0; i < answer.size(); i++){
-                solution.append("x" + i +": " + answer.get(i).getX() + " " + answer.get(i).getY() + "\n");
+            String solutionStr = "";
+            solutionStr += "Initial Guesses:\n";
+            solutionStr += "xL: " + answer.get(0).getX() + "\t\txR: " + answer.get(0).getY() + "\n\n";
+            for(int i = 1; i < answer.size(); i++){
+                solutionStr += "Iteration No. " + (i) + ":\n";
+                solutionStr += funcStr.replace("x", "(" + answer.get(i).getX() + "+" + answer.get(i).getY() + ") / 2");
             }
+            solutionStr += "Table\n";
+            
+            solution.setText(solutionStr);
+            history.push(new Tuple<>(funcStr, solutionStr));
             System.out.println(answer);
         });
         panel.add(calc, "span 2, align left, gaptop 10");
@@ -803,8 +868,8 @@ public class CalculatorApp {
         JTextArea solution = new JTextArea(20, 30);
         solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
         solution.setEditable(false);
-        solution.setLineWrap(true);
-        solution.setWrapStyleWord(true);
+        solution.setLineWrap(false);
+        solution.setWrapStyleWord(false);
         solution.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -812,6 +877,7 @@ public class CalculatorApp {
         solution.setBackground(new Color(0xFFFAF7));
         JScrollPane solutionScroll = new JScrollPane(solution);
         solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        solutionScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         rightPanel.add(solutionScroll, "grow");
         panel.add(rightPanel, "grow");
 
@@ -1058,8 +1124,8 @@ public class CalculatorApp {
         JTextArea solution = new JTextArea(20, 30);
         solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
         solution.setEditable(false);
-        solution.setLineWrap(true);
-        solution.setWrapStyleWord(true);
+        solution.setLineWrap(false);
+        solution.setWrapStyleWord(false);
         solution.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -1067,6 +1133,7 @@ public class CalculatorApp {
         solution.setBackground(new Color(0xFFFAF7));
         JScrollPane solutionScroll = new JScrollPane(solution);
         solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        solutionScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         rightPanel.add(solutionScroll, "grow");
         panel.add(rightPanel, "grow");
 

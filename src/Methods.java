@@ -48,7 +48,7 @@ public class Methods {
 
     //need a error handling where |g'(x)| < 1
     public List<Double> fixedPoint(Expression expression, double x, List<Double> xn){
-        if(!(Math.abs(numericalDerivative(expression, x)) < 1) && xn.size() == 0){
+        if(!(Math.abs(numericalDerivative(expression, x)) <= 1) && xn.size() == 0){
             System.out.println("|g'(x)| >= 1. Cannot proceed.");
             return xn;
         }
@@ -104,7 +104,7 @@ public class Methods {
             xn.add(x0);
             xn.add(x1);
         }
-        if(xn.size() == maxIteration + 1){ // para masama yung initial guess
+        if(xn.size() == maxIteration + 2){ // para masama yung initial guess
             System.out.println("Max iterations reached. Cannot proceed.");
             return xn;
         }

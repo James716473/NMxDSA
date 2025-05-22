@@ -306,6 +306,7 @@ public class CalculatorApp {
             String solutionStr = "";
             solutionStr += "x0 = " + answer.get(0) + "\n";
             for(int i = 1; i < answer.size(); i++){
+                solutionStr += "Iteration No. " + i + ":\n";
                 solutionStr += "x" + (i)  +" = " + funcStr.replace("x", "(" + answer.get(i - 1) + ")") + "\n";
                 solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n";
             }
@@ -543,17 +544,9 @@ public class CalculatorApp {
             List<Tuple<Double, Double>> answer = methods.bisection(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>());
             
             String solutionStr = "";
-            solutionStr += "xL1 = " + answer.get(0).getX() + ", xR1 = " + answer.get(0).getY() + "\n";
+            solutionStr += "xL0 = " + answer.get(0).getX() + ", xR0 = " + answer.get(0).getY() + "\n";
             for(int i = 1; i < answer.size(); i++){
-                solutionStr += "xL" + (i + 1)  +" = " + answer.get(i).getX() + ", xR" + (i + 1)  +" = " + answer.get(i).getY() + "\n";
-                solutionStr += "xM" + (i + 1)  +" = " + answer.get(i).getX() + " + " + answer.get(i).getY() + "/ 2\n";
-                solutionStr += "f(xM" + (i + 1)  +") = " + funcStr.replace("x", "(" + answer.get(i).getX() + " + " + answer.get(i).getY() + "/ 2" + ")") + "\n";
-                solutionStr += "f(xL" + (i + 1)  +") * f(xM" + (i + 1)  +") < 0\n";
-                solutionStr += "xL" + (i + 1)  +" = xM" + (i + 1)  +"\n";
-                solutionStr += "xR" + (i + 1)  +" = xR" + (i)  +"\n";
-                solutionStr += "f(xL" + (i + 1)  +") * f(xM" + (i + 1)  +") > 0\n";
-                solutionStr += "xR" + (i + 1)  +" = xM" + (i + 1)  +"\n";
-                solutionStr += "xL" + (i + 1)  +" = xL" + (i)  +"\n";
+                
             }
             
             solution.setText(solutionStr);

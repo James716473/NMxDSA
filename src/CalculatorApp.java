@@ -250,7 +250,7 @@ public class CalculatorApp {
         panel.add(desc, "span 2");
 
         // Left side - Input form
-        JPanel leftPanel = new JPanel(new MigLayout("wrap 1, gap 10", "[]", "[]"));
+        JPanel leftPanel = new JPanel(new MigLayout("wrap 1, gap 10 2", "[]", "[]"));
         leftPanel.setBackground(new Color(0xF7F3F0));
         JTextField func = new JTextField("x = cos(x)", 32);
         JTextField guess = new JTextField(32);
@@ -672,6 +672,47 @@ public class CalculatorApp {
         scroll.setBorder(BorderFactory.createEmptyBorder());
         scroll.setPreferredSize(equations.getPreferredSize());
         leftPanel.add(scroll, "align left");
+        // Add initial guess fields for Jacobi and Gauss-Seidel
+        JTextField guessX = null, guessY = null, guessZ = null;
+        if (methodName.equals("Jacobi Method") || methodName.equals("Gauss-Seidel Method")) {
+            JLabel guessLabel = new JLabel("Initial Guesses (x, y, z)");
+            guessLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
+            JPanel labelPanel = new JPanel(new MigLayout("wrap 3, gap 5, insets 0", "[grow][grow][grow]", "[]"));
+            labelPanel.setBackground(new Color(0xF7F3F0));
+            JLabel xLabel = new JLabel("x");
+            JLabel yLabel = new JLabel("y");
+            JLabel zLabel = new JLabel("z");
+            xLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
+            yLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
+            zLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
+            xLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            yLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            zLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            labelPanel.add(xLabel, "growx");
+            labelPanel.add(yLabel, "growx");
+            labelPanel.add(zLabel, "growx");
+            JPanel guessPanel = new JPanel(new MigLayout("wrap 3, gap 5, insets 0", "[grow][grow][grow]", "[]"));
+            guessPanel.setBackground(new Color(0xF7F3F0));
+            guessX = new JTextField(8);
+            guessY = new JTextField(8);
+            guessZ = new JTextField(8);
+            guessX.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
+            guessY.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
+            guessZ.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
+            guessPanel.add(guessX, "growx");
+            guessPanel.add(guessY, "growx");
+            guessPanel.add(guessZ, "growx");
+            leftPanel.add(guessLabel, "align left, gaptop 0");
+            leftPanel.add(labelPanel, "align left, growx");
+            leftPanel.add(guessPanel, "align left, growx");
+        }
+        // Add tolerance field below equations or guesses
+        JLabel tolLabel = new JLabel("Tolerance");
+        tolLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
+        JTextField tolField = new JTextField(36);
+        tolField.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
+        leftPanel.add(tolLabel, "align left, gaptop 10");
+        leftPanel.add(tolField, "align left");
         panel.add(leftPanel, "grow");
 
         // Right side - Solution display
@@ -911,6 +952,13 @@ public class CalculatorApp {
         leftPanel.add(scrollA, "wrap");
         leftPanel.add(labelB, "align right, gapy 20, gapx 15");
         leftPanel.add(scrollB, "gaptop 20");
+        // Add tolerance field below matrix/vector input
+        JLabel tolLabel = new JLabel("Tolerance");
+        tolLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
+        JTextField tolField = new JTextField(36);
+        tolField.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
+        leftPanel.add(tolLabel, "span 2, align left, gaptop 10");
+        leftPanel.add(tolField, "span 2, align left");
         panel.add(leftPanel, "grow");
 
         // Right side - Solution display

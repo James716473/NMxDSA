@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CalculatorApp",
+            "request": "launch",
+            "mainClass": "CalculatorApp",
+            "projectName": "NMxDSA_c8025b97"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "hellofx.Main",

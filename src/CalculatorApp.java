@@ -784,7 +784,7 @@ public class CalculatorApp {
                     methods.setMaxIteration(Integer.parseInt(maxIterField.getText()));
                     List<Double[]> answer = methods.jacobi(matrix, guess, new LinkedList<Double[]>());
                     for(int i = 0; i < answer.size(); i++){
-                        solution.append("x" + i +": " + answer.get(i)[0] + " " + answer.get(i)[1] + " " + answer.get(i)[2] + "\n");
+                        solution.append("x" + i +": " + answer.get(i)[0] + " y" + i + ": " + answer.get(i)[1] + " z" + i + ": " + answer.get(i)[2] + "\n");
                     }
                 } else if (methodName.equals("Gaussian Elimination")) {
                     double[] answer = methods.gaussianElimination(matrix);
@@ -793,7 +793,13 @@ public class CalculatorApp {
                     solution.append("y = " + answer[1] + "\n");
                     solution.append("z = " + answer[2] + "\n");
                 } else if (methodName.equals("Gauss-Seidel Method")) {
-                   
+                    Double[] guess = {Double.parseDouble(guessX.getText()), Double.parseDouble(guessY.getText()), Double.parseDouble(guessZ.getText())};
+                    methods.setTolerance(new BigDecimal(tolField.getText()));
+                     methods.setMaxIteration(Integer.parseInt(maxIterField.getText()));
+                    List<Double[]> answer = methods.gaussSeidel(matrix, guess, new LinkedList<Double[]>());
+                    for(int i = 0; i < answer.size(); i++){
+                        solution.append("x" + i +": " + answer.get(i)[0] + " y" + i + ": " + answer.get(i)[1] + " z" + i + ": " + answer.get(i)[2] + "\n");
+                    }
                 }
                 
             } catch (Exception ex) {
@@ -1055,17 +1061,7 @@ public class CalculatorApp {
         return panel;
     }
 
-    // Helper method to parse equations into matrix form
-    private double[][] parseEquationsToMatrix(String[] equations) {
-        double[][] matrix = new double[equations.length][equations.length + 1];
-        for (int i = 0; i < equations.length; i++) {
-            String[] parts = equations[i].trim().split("\\s+");
-            for (int j = 0; j < parts.length; j++) {
-                matrix[i][j] = Double.parseDouble(parts[j]);
-            }
-        }
-        return matrix;
-    }
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(CalculatorApp::new);

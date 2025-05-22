@@ -299,7 +299,10 @@ public class Methods {
         nextGuess[2] = (-matrix[2][0] * guess[0] + -matrix[2][1] * guess[1] + matrix[2][3]) / matrix[2][2];
         System.out.println(Arrays.toString(nextGuess));
         if(Math.abs(nextGuess[0] - guess[0]) < tolerance.doubleValue() && Math.abs(nextGuess[1] - guess[1]) < tolerance.doubleValue() && Math.abs(nextGuess[2] - guess[2]) < tolerance.doubleValue()){
-            
+            nextGuess[0] = new BigDecimal(nextGuess[0]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            nextGuess[1] = new BigDecimal(nextGuess[1]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            nextGuess[2] = new BigDecimal(nextGuess[2]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            xyz.add(nextGuess);
             return xyz;
         } else {
             nextGuess[0] = new BigDecimal(nextGuess[0]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
@@ -310,7 +313,7 @@ public class Methods {
         }
     }
 
-    public List<Double[]> gaussSeidel(double[][] matrix, List<Double[]> xyz){
+    public List<Double[]> gaussSeidel(double[][] matrix, Double[] guess, List<Double[]> xyz){
        
         
         //still cant wrap my head around this shit man
@@ -351,8 +354,16 @@ public class Methods {
         nextGuess[2] = (-matrix[2][0] * nextGuess[0] + -matrix[2][1] * nextGuess[1] + matrix[2][3]) / matrix[2][2];
         System.out.println(Arrays.toString(nextGuess));
         if(Math.abs(nextGuess[0] - guess[0]) < 1e-3 && Math.abs(nextGuess[1] - guess[1]) < 1e-3 && Math.abs(nextGuess[2] - guess[2]) < 1e-3){
+            nextGuess[0] = new BigDecimal(nextGuess[0]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            nextGuess[1] = new BigDecimal(nextGuess[1]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            nextGuess[2] = new BigDecimal(nextGuess[2]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            xyz.add(nextGuess);
             return xyz;
         } else {
+            nextGuess[0] = new BigDecimal(nextGuess[0]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            nextGuess[1] = new BigDecimal(nextGuess[1]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            nextGuess[2] = new BigDecimal(nextGuess[2]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            
             xyz.add(nextGuess);
             return gaussSeidelEvaluate(matrix, nextGuess, xyz);
         }

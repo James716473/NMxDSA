@@ -48,6 +48,10 @@ public class Methods {
 
     //need a error handling where |g'(x)| < 1
     public List<Double> fixedPoint(Expression expression, double x, List<Double> xn){
+        if(!(Math.abs(numericalDerivative(expression, x)) < 1) && xn.size() == 0){
+            System.out.println("|g'(x)| >= 1. Cannot proceed.");
+            return xn;
+        }
         if(xn.size() == 0){ // para masama yung initial guess
             xn.add(x);
         }
@@ -192,6 +196,28 @@ public class Methods {
         return ab;
     }
 
+    public int[][] matrixMultiplication(int[][] a, int[][] b) {
+        int m = a.length;         // rows in A
+        int n = a[0].length;      // cols in A (must equal rows in B)
+        int p = b[0].length;      // cols in B
+    
+        // Create result matrix
+        int[][] result = new int[m][p];
+    
+        // Perform multiplication
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < p; j++) {
+                result[i][j] = 0;
+                for (int k = 0; k < n; k++) {
+                    result[i][j] += a[i][k] * b[k][j];
+                }
+            }
+        }
+    
+        return result;
+    }
+    
+
     //can only solve 3x3 matrix (x, y, z)
     //need muna iparse into matrix
     public double[] cramer(double[][] matrix){
@@ -258,7 +284,7 @@ public class Methods {
     }
 
     //iparse muna as matrix
-    public List<Double[]> jacobi(double[][] matrix, Double[] guess, List<Double[]> xyz){
+    public List<Double[]> jacobi(double[][] matrix, List<Double[]> xyz){
         
         
         //still cant wrap my head around this shit man
@@ -279,7 +305,7 @@ public class Methods {
         }
         
         //insert initial guess
-        
+        Double[] guess = {0.0, 0.0 , 0.0};
         
         
         return jacobiEvaluate(matrix, guess, xyz);
@@ -299,10 +325,7 @@ public class Methods {
         nextGuess[2] = (-matrix[2][0] * guess[0] + -matrix[2][1] * guess[1] + matrix[2][3]) / matrix[2][2];
         System.out.println(Arrays.toString(nextGuess));
         if(Math.abs(nextGuess[0] - guess[0]) < tolerance.doubleValue() && Math.abs(nextGuess[1] - guess[1]) < tolerance.doubleValue() && Math.abs(nextGuess[2] - guess[2]) < tolerance.doubleValue()){
-            nextGuess[0] = new BigDecimal(nextGuess[0]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
-            nextGuess[1] = new BigDecimal(nextGuess[1]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
-            nextGuess[2] = new BigDecimal(nextGuess[2]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
-            xyz.add(nextGuess);
+            
             return xyz;
         } else {
             nextGuess[0] = new BigDecimal(nextGuess[0]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
@@ -333,11 +356,10 @@ public class Methods {
             }
         }
         
-        //insert initial guess
-        Double[] initialGuess = {0.0, 0.0, 0.0};
         
         
-        return gaussSeidelEvaluate(matrix, initialGuess, xyz);
+        
+        return gaussSeidelEvaluate(matrix, guess, xyz);
 
         
 
@@ -354,16 +376,8 @@ public class Methods {
         nextGuess[2] = (-matrix[2][0] * nextGuess[0] + -matrix[2][1] * nextGuess[1] + matrix[2][3]) / matrix[2][2];
         System.out.println(Arrays.toString(nextGuess));
         if(Math.abs(nextGuess[0] - guess[0]) < 1e-3 && Math.abs(nextGuess[1] - guess[1]) < 1e-3 && Math.abs(nextGuess[2] - guess[2]) < 1e-3){
-            nextGuess[0] = new BigDecimal(nextGuess[0]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
-            nextGuess[1] = new BigDecimal(nextGuess[1]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
-            nextGuess[2] = new BigDecimal(nextGuess[2]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
-            xyz.add(nextGuess);
             return xyz;
         } else {
-            nextGuess[0] = new BigDecimal(nextGuess[0]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
-            nextGuess[1] = new BigDecimal(nextGuess[1]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
-            nextGuess[2] = new BigDecimal(nextGuess[2]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
-            
             xyz.add(nextGuess);
             return gaussSeidelEvaluate(matrix, nextGuess, xyz);
         }

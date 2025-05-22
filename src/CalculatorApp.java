@@ -12,13 +12,14 @@ import java.util.LinkedList;
 import java.math.BigDecimal;
 import java.util.Stack;
 
+
 public class CalculatorApp {
     private static final String[] METHODS = {
             "Fixed-Point", "Newton-Raphson", "Secant", "Bisection", "False Position",
             "Matrix", "Cramer's Rule", "Jacobi", "Gaussian Elimination", "Gauss-Seidel"
     };
     private Methods methods = new Methods(100);
-    private Stack<Object> history = new Stack<>(); // wtf is a type safety 🗣🔥🔥 
+    private Stack<Tuple<String, String>> history = new Stack<>(); // wtf is a type safety 🗣🔥🔥 
     private JFrame frame;
     private JPanel methodPanel;
     private CardLayout cardLayout;
@@ -299,12 +300,18 @@ public class CalculatorApp {
             methods.setMaxIteration(Integer.parseInt(maxIterStr));
             methods.setTolerance(new BigDecimal(tolStr));
             List<Double> answer = methods.fixedPoint(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>());
-            history.push(answer);
+            
             historyListModel.insertElementAt(funcStr, 0);
             System.out.println(answer);
-            for(int i = 0; i < answer.size(); i++){
-                solution.append("x" + i +": " + answer.get(i) + "\n");
+            String solutionStr = "";
+            solutionStr += "x0: " + answer.get(0) + "\n";
+            for(int i = 1; i < answer.size(); i++){
+                solutionStr += "x" + (i+1)  +" = " + funcStr.replace("x", "(" + answer.get(i) + ")") + "\n";
+                solutionStr += "x" + (i+1)  +": " + answer.get(i) + "\n";
             }
+            System.out.println(answer.size());
+            solution.setText(solutionStr);
+            history.push(new Tuple<>(funcStr, solutionStr));
         });
         panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
@@ -371,7 +378,7 @@ public class CalculatorApp {
             methods.setTolerance(new BigDecimal(tolStr));
             historyListModel.insertElementAt(funcStr, 0);
             List<Double> answer = methods.newtonRaphson(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>());
-            history.push(answer);
+            
             for(int i = 0; i < answer.size(); i++){
                 solution.append("x" + i +": " + answer.get(i) + "\n");
             }
@@ -446,7 +453,7 @@ public class CalculatorApp {
             methods.setTolerance(new BigDecimal(tolStr));
             historyListModel.insertElementAt(funcStr, 0);
             List<Double> answer = methods.secant(methods.parseEquation(funcStr), Double.parseDouble(x0Str), Double.parseDouble(x1Str), new LinkedList<Double>());
-            history.push(answer);
+            
             for(int i = 0; i < answer.size(); i++){
                 solution.append("x" + i +": " + answer.get(i) + "\n");
             }
@@ -521,7 +528,7 @@ public class CalculatorApp {
             methods.setTolerance(new BigDecimal(tolStr));
             historyListModel.insertElementAt(funcStr, 0);
             List<Tuple<Double, Double>> answer = methods.bisection(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>());
-            history.push(answer);
+            
             for(int i = 0; i < answer.size(); i++){
                 solution.append("x" + i +": " + answer.get(i).getX() + " " + answer.get(i).getY() + "\n");
             }
@@ -596,7 +603,7 @@ public class CalculatorApp {
             methods.setTolerance(new BigDecimal(tolStr));
             historyListModel.insertElementAt(funcStr, 0);
             List<Tuple<Double, Double>> answer = methods.falsePosition(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>());
-            history.push(answer);
+            
             for(int i = 0; i < answer.size(); i++){
                 solution.append("x" + i +": " + answer.get(i).getX() + " " + answer.get(i).getY() + "\n");
             }
@@ -686,7 +693,7 @@ public class CalculatorApp {
         guessX.setVisible(false);
         guessY.setVisible(false);
         guessZ.setVisible(false);
-        if (methodName.equals("Jacobi Method") || methodName.equals("Gauss-Seidel Method")) {
+        if (methodName.equals("Gauss-Seidel Method")) {
             JLabel guessLabel = new JLabel("Initial Guesses (x, y, z)");
             guessLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
             JPanel labelPanel = new JPanel(new MigLayout("wrap 3, gap 5, insets 0", "[grow][grow][grow]", "[]"));
@@ -731,7 +738,7 @@ public class CalculatorApp {
         JTextField maxIterField = new JTextField(36);
         maxIterLabel.setVisible(false);
         maxIterField.setVisible(false);
-        if (methodName.equals("Jacobi Method") || methodName.equals("Gauss-Seidel Method")) {
+        if (methodName.equals("Gauss-Seidel Method") || methodName.equals("Jacobi Method")) {
             maxIterLabel.setVisible(true);
             maxIterField.setVisible(true);
             maxIterLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
@@ -779,10 +786,10 @@ public class CalculatorApp {
                     solution.append("z = " + answer[2] + "\n");
                     
                 } else if (methodName.equals("Jacobi Method")) {
-                    Double[] guess = {Double.parseDouble(guessX.getText()), Double.parseDouble(guessY.getText()), Double.parseDouble(guessZ.getText())};
+                    
                     methods.setTolerance(new BigDecimal(tolField.getText()));
                     methods.setMaxIteration(Integer.parseInt(maxIterField.getText()));
-                    List<Double[]> answer = methods.jacobi(matrix, guess, new LinkedList<Double[]>());
+                    List<Double[]> answer = methods.jacobi(matrix, new LinkedList<Double[]>());
                     for(int i = 0; i < answer.size(); i++){
                         solution.append("x" + i +": " + answer.get(i)[0] + " y" + i + ": " + answer.get(i)[1] + " z" + i + ": " + answer.get(i)[2] + "\n");
                     }

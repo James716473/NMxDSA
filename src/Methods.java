@@ -56,7 +56,10 @@ public class Methods {
             return xn;
         }
         double nextX = expression.setVariable("x", x).evaluate();
+        
         if(Math.abs(nextX - x) <= tolerance.doubleValue()){
+            nextX = new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue(); 
+            xn.add(nextX);
             return xn;
         } else {
             nextX = new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue(); 
@@ -80,7 +83,10 @@ public class Methods {
         }
 
         double nextX = x - (expression.setVariable("x", x).evaluate() / xd);
+        
         if(Math.abs(nextX - x) <= tolerance.doubleValue()){
+            nextX = new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();// ginagawa lang neto is niroroundoff ung x base dun sa tolerance
+            xn.add(nextX);
             return xn;
         } else {
             nextX = new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();// ginagawa lang neto is niroroundoff ung x base dun sa tolerance
@@ -101,8 +107,10 @@ public class Methods {
         
         double nextX = x1 - (expression.setVariable("x", x1).evaluate() * ((x1 - x0) / (expression.setVariable("x", x1).evaluate() - expression.setVariable("x", x0).evaluate())));
         
-
+        
         if(Math.abs(nextX - x1) <= tolerance.doubleValue()){
+            nextX = new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            xn.add(nextX);
             return xn;
         } else {
             nextX = new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
@@ -126,18 +134,20 @@ public class Methods {
             System.out.println("xL and xR should have opposite signs");
             return xn;
         }
-        xM = new BigDecimal(xM).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+        
         double fxM = expression.setVariable("x", xM).evaluate();
         
         
-        if(Math.abs(xR - xL) < tolerance.doubleValue()){
+        if(Math.abs(xR - xL) <= tolerance.doubleValue()){
+            xM = new BigDecimal(xM).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
             xn.add(new Tuple<Double, Double>(xM, xM));
             return xn;
         } else if (expression.setVariable("x", xL).evaluate() * fxM < 0){
-            
+            xM = new BigDecimal(xM).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
             xn.add(new Tuple<Double, Double>(xL, xM));
             return bisection(expression, xL, xM, xn);
         } else {
+            xM = new BigDecimal(xM).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
             xn.add(new Tuple<Double, Double>(xM, xR));
             return bisection(expression, xM, xR, xn);
         }
@@ -156,14 +166,17 @@ public class Methods {
             return xn;
         }
         double nextX = xL + (((xR-xL) * (-1 * expression.setVariable("x", xL).evaluate())) / (expression.setVariable("x", xR).evaluate() - expression.setVariable("x", xL).evaluate()));
-        nextX = new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
-        if(Math.abs(nextX - xL) < tolerance.doubleValue() || Math.abs(nextX - xR) < tolerance.doubleValue()){
+        
+        if(Math.abs(nextX - xL) <= tolerance.doubleValue() || Math.abs(nextX - xR) < tolerance.doubleValue()){
+            nextX = new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
             xn.add(new Tuple<Double,Double>(nextX, nextX));
             return xn;
         } else if (expression.setVariable("x", xL).evaluate() * expression.setVariable("x", nextX).evaluate() < 0){
+            nextX = new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
             xn.add(new Tuple<Double,Double>(xL, nextX));
             return falsePosition(expression, xL, nextX, xn);
         } else {
+            nextX = new BigDecimal(nextX).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
             xn.add(new Tuple<Double,Double>(nextX, xR));
             return falsePosition(expression, nextX, xR, xn);
         }
@@ -344,10 +357,15 @@ public class Methods {
     
     public Expression parseEquation(String equation){
         String[] parsedEquation = new String[2];
-        
-        parsedEquation[0] = equation.substring(0, equation.indexOf('=')).trim();
-        parsedEquation[1] = equation.substring(equation.indexOf('=') + 1, equation.length()).trim();
-        return new ExpressionBuilder(parsedEquation[0]).variable("x").build();
+        // Clean the input string
+        equation = equation.replaceAll("[^\\x00-\\x7F]", ""); // Remove non-ASCII characters
+        equation = equation.replaceAll("\\s+", " ").trim(); // Normalize whitespace
+        if(equation.contains("=")){
+            parsedEquation[0] = equation.substring(0, equation.indexOf('=')).trim();
+            parsedEquation[1] = equation.substring(equation.indexOf('=') + 1, equation.length()).trim();
+            return new ExpressionBuilder(parsedEquation[0]).variable("x").build();
+        }
+        return new ExpressionBuilder(equation).variable("x").build();
     }
     
     

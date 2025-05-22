@@ -290,15 +290,20 @@ public class CalculatorApp {
 
         JButton calc = calcButton();
         calc.addActionListener(e -> {
+            solution.setText("");
             String funcStr = func.getText();
             String guessStr = guess.getText();
             String tolStr = tol.getText();
             String maxIterStr = maxIter.getText();
             methods.setMaxIteration(Integer.parseInt(maxIterStr));
             methods.setTolerance(new BigDecimal(tolStr));
-            history.push(methods.fixedPoint(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>()));
+            List<Double> answer = methods.fixedPoint(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>());
+            history.push(answer);
             historyListModel.insertElementAt(funcStr, 0);
-            System.out.println(methods.fixedPoint(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>()));
+            System.out.println(answer);
+            for(int i = 0; i < answer.size(); i++){
+                solution.append("x" + i +": " + answer.get(i) + "\n");
+            }
         });
         panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
@@ -356,6 +361,7 @@ public class CalculatorApp {
 
         JButton calc = calcButton();
         calc.addActionListener(e -> {
+            solution.setText("");
             String funcStr = func.getText();
             String guessStr = guess.getText();
             String tolStr = tol.getText();
@@ -363,8 +369,12 @@ public class CalculatorApp {
             methods.setMaxIteration(Integer.parseInt(maxIterStr));
             methods.setTolerance(new BigDecimal(tolStr));
             historyListModel.insertElementAt(funcStr, 0);
-            history.push(methods.newtonRaphson(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>()));
-            System.out.println(methods.newtonRaphson(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>()));
+            List<Double> answer = methods.newtonRaphson(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>());
+            history.push(answer);
+            for(int i = 0; i < answer.size(); i++){
+                solution.append("x" + i +": " + answer.get(i) + "\n");
+            }
+            System.out.println(answer);
         });
         panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
@@ -425,6 +435,7 @@ public class CalculatorApp {
 
         JButton calc = calcButton();
         calc.addActionListener(e -> {
+            solution.setText("");
             String funcStr = func.getText();
             String x0Str = x0.getText();
             String x1Str = x1.getText();
@@ -433,8 +444,12 @@ public class CalculatorApp {
             methods.setMaxIteration(Integer.parseInt(maxIterStr));
             methods.setTolerance(new BigDecimal(tolStr));
             historyListModel.insertElementAt(funcStr, 0);
-            history.push(methods.secant(methods.parseEquation(funcStr), Double.parseDouble(x0Str), Double.parseDouble(x1Str), new LinkedList<Double>()));
-            System.out.println(methods.secant(methods.parseEquation(funcStr), Double.parseDouble(x0Str), Double.parseDouble(x1Str), new LinkedList<Double>()));
+            List<Double> answer = methods.secant(methods.parseEquation(funcStr), Double.parseDouble(x0Str), Double.parseDouble(x1Str), new LinkedList<Double>());
+            history.push(answer);
+            for(int i = 0; i < answer.size(); i++){
+                solution.append("x" + i +": " + answer.get(i) + "\n");
+            }
+            System.out.println(answer);
         });
         panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
@@ -495,6 +510,7 @@ public class CalculatorApp {
 
         JButton calc = calcButton();
         calc.addActionListener(e -> {
+            solution.setText("");
             String funcStr = func.getText();
             String aStr = a.getText();
             String bStr = b.getText();
@@ -503,8 +519,12 @@ public class CalculatorApp {
             methods.setMaxIteration(Integer.parseInt(maxIterStr));
             methods.setTolerance(new BigDecimal(tolStr));
             historyListModel.insertElementAt(funcStr, 0);
-            history.push(methods.bisection(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>()));
-            System.out.println(methods.bisection(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>()));
+            List<Tuple<Double, Double>> answer = methods.bisection(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>());
+            history.push(answer);
+            for(int i = 0; i < answer.size(); i++){
+                solution.append("x" + i +": " + answer.get(i).getX() + " " + answer.get(i).getY() + "\n");
+            }
+            System.out.println(answer);
         });
         panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
@@ -565,6 +585,7 @@ public class CalculatorApp {
 
         JButton calc = calcButton();
         calc.addActionListener(e -> {
+            solution.setText("");
             String funcStr = func.getText();
             String aStr = a.getText();
             String bStr = b.getText();
@@ -573,8 +594,12 @@ public class CalculatorApp {
             methods.setMaxIteration(Integer.parseInt(maxIterStr));
             methods.setTolerance(new BigDecimal(tolStr));
             historyListModel.insertElementAt(funcStr, 0);
-            history.push(methods.falsePosition(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>()));
-            System.out.println(methods.falsePosition(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>()));
+            List<Tuple<Double, Double>> answer = methods.falsePosition(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>());
+            history.push(answer);
+            for(int i = 0; i < answer.size(); i++){
+                solution.append("x" + i +": " + answer.get(i).getX() + " " + answer.get(i).getY() + "\n");
+            }
+            System.out.println(answer);
         });
         panel.add(calc, "span 2, align left, gaptop 10");
         return panel;

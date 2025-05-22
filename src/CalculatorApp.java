@@ -116,8 +116,8 @@ public class CalculatorApp {
         JTextArea solutionArea = new JTextArea();
         solutionArea.setFont(new Font("Monospaced", Font.PLAIN, 16));
         solutionArea.setEditable(false);
-        solutionArea.setLineWrap(true);
-        solutionArea.setWrapStyleWord(true);
+        solutionArea.setLineWrap(false);
+        solutionArea.setWrapStyleWord(false);
         solutionArea.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -125,6 +125,7 @@ public class CalculatorApp {
         solutionArea.setBackground(Color.WHITE);
         JScrollPane scrollSolution = new JScrollPane(solutionArea);
         scrollSolution.setPreferredSize(new Dimension(600, 400));
+        scrollSolution.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         panel.add(scrollSolution, "grow, pushx, span 1");
 
         // Show solution when an equation is selected
@@ -318,8 +319,8 @@ public class CalculatorApp {
         JTextArea solution = new JTextArea(20, 30);
         solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
         solution.setEditable(false);
-        solution.setLineWrap(true);
-        solution.setWrapStyleWord(true);
+        solution.setLineWrap(false);
+        solution.setWrapStyleWord(false);
         solution.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -327,6 +328,7 @@ public class CalculatorApp {
         solution.setBackground(new Color(0xFFFAF7));
         JScrollPane solutionScroll = new JScrollPane(solution);
         solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        solutionScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         rightPanel.add(solutionScroll, "grow");
         panel.add(rightPanel, "grow");
 
@@ -397,8 +399,8 @@ public class CalculatorApp {
         JTextArea solution = new JTextArea(20, 30);
         solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
         solution.setEditable(false);
-        solution.setLineWrap(true);
-        solution.setWrapStyleWord(true);
+        solution.setLineWrap(false);
+        solution.setWrapStyleWord(false);
         solution.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -406,6 +408,7 @@ public class CalculatorApp {
         solution.setBackground(new Color(0xFFFAF7));
         JScrollPane solutionScroll = new JScrollPane(solution);
         solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        solutionScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         rightPanel.add(solutionScroll, "grow");
         panel.add(rightPanel, "grow");
 
@@ -471,8 +474,8 @@ public class CalculatorApp {
         JTextArea solution = new JTextArea(20, 30);
         solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
         solution.setEditable(false);
-        solution.setLineWrap(true);
-        solution.setWrapStyleWord(true);
+        solution.setLineWrap(false);
+        solution.setWrapStyleWord(false);
         solution.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -480,6 +483,7 @@ public class CalculatorApp {
         solution.setBackground(new Color(0xFFFAF7));
         JScrollPane solutionScroll = new JScrollPane(solution);
         solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        solutionScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         rightPanel.add(solutionScroll, "grow");
         panel.add(rightPanel, "grow");
 
@@ -546,8 +550,8 @@ public class CalculatorApp {
         JTextArea solution = new JTextArea(20, 30);
         solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
         solution.setEditable(false);
-        solution.setLineWrap(true);
-        solution.setWrapStyleWord(true);
+        solution.setLineWrap(false);
+        solution.setWrapStyleWord(false);
         solution.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -555,6 +559,7 @@ public class CalculatorApp {
         solution.setBackground(new Color(0xFFFAF7));
         JScrollPane solutionScroll = new JScrollPane(solution);
         solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        solutionScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         rightPanel.add(solutionScroll, "grow");
         panel.add(rightPanel, "grow");
 
@@ -621,8 +626,8 @@ public class CalculatorApp {
         JTextArea solution = new JTextArea(20, 30);
         solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
         solution.setEditable(false);
-        solution.setLineWrap(true);
-        solution.setWrapStyleWord(true);
+        solution.setLineWrap(false);
+        solution.setWrapStyleWord(false);
         solution.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -630,6 +635,7 @@ public class CalculatorApp {
         solution.setBackground(new Color(0xFFFAF7));
         JScrollPane solutionScroll = new JScrollPane(solution);
         solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        solutionScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         rightPanel.add(solutionScroll, "grow");
         panel.add(rightPanel, "grow");
 
@@ -801,8 +807,8 @@ public class CalculatorApp {
         JTextArea solution = new JTextArea(20, 30);
         solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
         solution.setEditable(false);
-        solution.setLineWrap(true);
-        solution.setWrapStyleWord(true);
+        solution.setLineWrap(false);
+        solution.setWrapStyleWord(false);
         solution.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -810,6 +816,7 @@ public class CalculatorApp {
         solution.setBackground(new Color(0xFFFAF7));
         JScrollPane solutionScroll = new JScrollPane(solution);
         solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        solutionScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         rightPanel.add(solutionScroll, "grow");
         panel.add(rightPanel, "grow");
 
@@ -1056,8 +1063,8 @@ public class CalculatorApp {
         JTextArea solution = new JTextArea(20, 30);
         solution.setFont(new Font("Monospaced", Font.PLAIN, 14));
         solution.setEditable(false);
-        solution.setLineWrap(true);
-        solution.setWrapStyleWord(true);
+        solution.setLineWrap(false);
+        solution.setWrapStyleWord(false);
         solution.setBorder(BorderFactory.createCompoundBorder(
             new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
@@ -1065,6 +1072,7 @@ public class CalculatorApp {
         solution.setBackground(new Color(0xFFFAF7));
         JScrollPane solutionScroll = new JScrollPane(solution);
         solutionScroll.setBorder(BorderFactory.createEmptyBorder());
+        solutionScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         rightPanel.add(solutionScroll, "grow");
         panel.add(rightPanel, "grow");
 

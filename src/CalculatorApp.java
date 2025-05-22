@@ -893,7 +893,7 @@ public class CalculatorApp {
         JLabel labelA = new JLabel("A =");
         labelA.setFont(new Font("Bodoni MT", Font.BOLD, 18));
         labelA.setHorizontalAlignment(SwingConstants.RIGHT);
-        JTextArea areaA = new RoundedTextArea(3, 7, 32);
+        JTextArea areaA = new RoundedTextArea(4, 7, 32);
         areaA.setFont(new Font("Monospaced", Font.PLAIN, 16));
         areaA.setLineWrap(true);
         areaA.setWrapStyleWord(true);
@@ -908,7 +908,7 @@ public class CalculatorApp {
         // Limit to 6 lines, 8 columns
         ((javax.swing.text.AbstractDocument) areaA.getDocument()).setDocumentFilter(new javax.swing.text.DocumentFilter() {
             private final int MAX_COLS = 6;
-            private final int MAX_LINES = 3;
+            private final int MAX_LINES = 4;
             @Override
             public void insertString(FilterBypass fb, int offset, String string, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
                 StringBuilder sb = new StringBuilder(areaA.getText());

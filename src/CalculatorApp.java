@@ -674,15 +674,29 @@ public class CalculatorApp {
         scroll.setPreferredSize(equations.getPreferredSize());
         leftPanel.add(scroll, "align left");
         // Add initial guess fields for Jacobi and Gauss-Seidel
-        JTextField guessX = null, guessY = null, guessZ = null;
+        JLabel xLabel = new JLabel("x");
+        JLabel yLabel = new JLabel("y");
+        JLabel zLabel = new JLabel("z");
+        JTextField guessX = new JTextField(8);
+        JTextField guessY = new JTextField(8);
+        JTextField guessZ = new JTextField(8);
+        xLabel.setVisible(false);
+        yLabel.setVisible(false);
+        zLabel.setVisible(false);
+        guessX.setVisible(false);
+        guessY.setVisible(false);
+        guessZ.setVisible(false);
         if (methodName.equals("Jacobi Method") || methodName.equals("Gauss-Seidel Method")) {
             JLabel guessLabel = new JLabel("Initial Guesses (x, y, z)");
             guessLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
             JPanel labelPanel = new JPanel(new MigLayout("wrap 3, gap 5, insets 0", "[grow][grow][grow]", "[]"));
             labelPanel.setBackground(new Color(0xF7F3F0));
-            JLabel xLabel = new JLabel("x");
-            JLabel yLabel = new JLabel("y");
-            JLabel zLabel = new JLabel("z");
+            xLabel.setVisible(true);
+            yLabel.setVisible(true);
+            zLabel.setVisible(true);
+            guessX.setVisible(true);
+            guessY.setVisible(true);
+            guessZ.setVisible(true);
             xLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
             yLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
             zLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
@@ -694,9 +708,7 @@ public class CalculatorApp {
             labelPanel.add(zLabel, "growx");
             JPanel guessPanel = new JPanel(new MigLayout("wrap 3, gap 5, insets 0", "[grow][grow][grow]", "[]"));
             guessPanel.setBackground(new Color(0xF7F3F0));
-            guessX = new JTextField(8);
-            guessY = new JTextField(8);
-            guessZ = new JTextField(8);
+            
             guessX.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
             guessY.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
             guessZ.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
@@ -715,11 +727,15 @@ public class CalculatorApp {
         leftPanel.add(tolLabel, "align left, gaptop 5");
         leftPanel.add(tolField, "align left");
         // Add max iterations field for Jacobi and Gauss-Seidel
-        JTextField maxIterField = null;
+        JLabel maxIterLabel = new JLabel("Max Iterations");
+        JTextField maxIterField = new JTextField(36);
+        maxIterLabel.setVisible(false);
+        maxIterField.setVisible(false);
         if (methodName.equals("Jacobi Method") || methodName.equals("Gauss-Seidel Method")) {
-            JLabel maxIterLabel = new JLabel("Max Iterations");
+            maxIterLabel.setVisible(true);
+            maxIterField.setVisible(true);
             maxIterLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
-            maxIterField = new JTextField(36);
+            
             maxIterField.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
             leftPanel.add(maxIterLabel, "align left, gaptop 5");
             leftPanel.add(maxIterField, "align left");
@@ -763,7 +779,13 @@ public class CalculatorApp {
                     solution.append("z = " + answer[2] + "\n");
                     
                 } else if (methodName.equals("Jacobi Method")) {
-                    
+                    Double[] guess = {Double.parseDouble(guessX.getText()), Double.parseDouble(guessY.getText()), Double.parseDouble(guessZ.getText())};
+                    methods.setTolerance(new BigDecimal(tolField.getText()));
+                    methods.setMaxIteration(Integer.parseInt(maxIterField.getText()));
+                    List<Double[]> answer = methods.jacobi(matrix, guess, new LinkedList<Double[]>());
+                    for(int i = 0; i < answer.size(); i++){
+                        solution.append("x" + i +": " + answer.get(i)[0] + " " + answer.get(i)[1] + " " + answer.get(i)[2] + "\n");
+                    }
                 } else if (methodName.equals("Gaussian Elimination")) {
                     double[] answer = methods.gaussianElimination(matrix);
                     

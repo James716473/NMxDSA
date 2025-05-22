@@ -258,7 +258,7 @@ public class Methods {
     }
 
     //iparse muna as matrix
-    public List<Double[]> jacobi(double[][] matrix, List<Double[]> xyz){
+    public List<Double[]> jacobi(double[][] matrix, Double[] guess, List<Double[]> xyz){
         
         
         //still cant wrap my head around this shit man
@@ -279,17 +279,17 @@ public class Methods {
         }
         
         //insert initial guess
-        Double[] initialGuess = {0.0, 0.0, 0.0};
         
         
-        return jacobiEvaluate(matrix, initialGuess, xyz);
+        
+        return jacobiEvaluate(matrix, guess, xyz);
 
         
 
     }
 
     public List<Double[]> jacobiEvaluate(double[][] matrix, Double[] guess, List<Double[]> xyz){
-        if(xyz.size() == maxIteration){
+        if(xyz.size() == maxIteration + 1){
             System.out.println("Max iterations reached. Cannot proceed.");
             return xyz;
         }
@@ -298,9 +298,13 @@ public class Methods {
         nextGuess[1] = (-matrix[1][0] * guess[0] + -matrix[1][2] * guess[2] + matrix[1][3]) / matrix[1][1];
         nextGuess[2] = (-matrix[2][0] * guess[0] + -matrix[2][1] * guess[1] + matrix[2][3]) / matrix[2][2];
         System.out.println(Arrays.toString(nextGuess));
-        if(Math.abs(nextGuess[0] - guess[0]) < 1e-3 && Math.abs(nextGuess[1] - guess[1]) < 1e-3 && Math.abs(nextGuess[2] - guess[2]) < 1e-3){
+        if(Math.abs(nextGuess[0] - guess[0]) < tolerance.doubleValue() && Math.abs(nextGuess[1] - guess[1]) < tolerance.doubleValue() && Math.abs(nextGuess[2] - guess[2]) < tolerance.doubleValue()){
+            
             return xyz;
         } else {
+            nextGuess[0] = new BigDecimal(nextGuess[0]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            nextGuess[1] = new BigDecimal(nextGuess[1]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            nextGuess[2] = new BigDecimal(nextGuess[2]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
             xyz.add(nextGuess);
             return jacobiEvaluate(matrix, nextGuess, xyz);
         }

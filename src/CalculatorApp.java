@@ -881,34 +881,32 @@ public class CalculatorApp {
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
         panel.add(header, "span 2");
-        JLabel desc = new JLabel("Enter your matrix A (separated by ENTER) and vector B (separated by SPACE) below.");
+        JLabel desc = new JLabel("Enter your matrix A and vector B below.");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
         panel.add(desc, "span 2, wrap, gapbottom 10");
 
         // Left side - Input form
-        JPanel leftPanel = new JPanel(new MigLayout("fillx, wrap 2, gap 10", "[][grow]"));
+        JPanel leftPanel = new JPanel(new MigLayout("wrap 1, fillx, gap 10", "[grow]", ""));
         leftPanel.setBackground(new Color(0xF7F3F0));
 
-        // Label and text area for A (tall, narrow)
-        JLabel labelA = new JLabel("A =");
+        // Label and text area for A
+        JLabel labelA = new JLabel("A");
         labelA.setFont(new Font("Bodoni MT", Font.BOLD, 18));
-        labelA.setHorizontalAlignment(SwingConstants.RIGHT);
-        JTextArea areaA = new RoundedTextArea(4, 7, 32);
-        areaA.setFont(new Font("Monospaced", Font.PLAIN, 16));
+        labelA.setHorizontalAlignment(SwingConstants.LEFT);
+        leftPanel.add(labelA, "align left, gapbottom 2");
+        JTextArea areaA = new RoundedTextArea(3, 30, 18);
+        areaA.setFont(new Font("Monospaced", Font.PLAIN, 14));
         areaA.setLineWrap(true);
         areaA.setWrapStyleWord(true);
         areaA.setBorder(BorderFactory.createCompoundBorder(
-            new RoundedBorder(32),
+            new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
         ));
         areaA.setBackground(Color.WHITE);
-        int rowHeight = areaA.getFontMetrics(areaA.getFont()).getHeight();
-        int areaAHeight = rowHeight * 3 + 24;
-        areaA.setPreferredSize(new Dimension(90, areaAHeight));
-        // Limit to 6 lines, 8 columns
+        // Limit to 3 lines, 20 columns
         ((javax.swing.text.AbstractDocument) areaA.getDocument()).setDocumentFilter(new javax.swing.text.DocumentFilter() {
-            private final int MAX_COLS = 6;
-            private final int MAX_LINES = 4;
+            private final int MAX_COLS = 20;
+            private final int MAX_LINES = 3;
             @Override
             public void insertString(FilterBypass fb, int offset, String string, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
                 StringBuilder sb = new StringBuilder(areaA.getText());
@@ -937,29 +935,31 @@ public class CalculatorApp {
         });
         JScrollPane scrollA = new JScrollPane(areaA);
         scrollA.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollA.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         scrollA.setBorder(BorderFactory.createEmptyBorder());
-        scrollA.setPreferredSize(areaA.getPreferredSize());
+        scrollA.setPreferredSize(new Dimension(360, 80));
         scrollA.setOpaque(false);
         scrollA.getViewport().setOpaque(false);
+        leftPanel.add(scrollA, "gapbottom 10");
 
-        // Label and text area for B (short, wide)
-        JLabel labelB = new JLabel("B =");
-        labelB.setFont(new Font("Bodoni MT", Font.PLAIN, 18));
-        labelB.setHorizontalAlignment(SwingConstants.RIGHT);
-        JTextArea areaB = new RoundedTextArea(1, 30, 32);
-        areaB.setFont(new Font("Monospaced", Font.PLAIN, 16));
+        // Label and text area for B
+        JLabel labelB = new JLabel("B");
+        labelB.setFont(new Font("Bodoni MT", Font.BOLD, 18));
+        labelB.setHorizontalAlignment(SwingConstants.LEFT);
+        leftPanel.add(labelB, "align left, gapbottom 2");
+        JTextArea areaB = new RoundedTextArea(3, 30, 18);
+        areaB.setFont(new Font("Monospaced", Font.PLAIN, 14));
         areaB.setLineWrap(true);
         areaB.setWrapStyleWord(true);
         areaB.setBorder(BorderFactory.createCompoundBorder(
-            new RoundedBorder(32),
+            new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
         ));
         areaB.setBackground(Color.WHITE);
-        areaB.setPreferredSize(new Dimension(320, 48));
-        // Limit to 1 line, 30 columns
+        // Limit to 3 lines, 20 columns
         ((javax.swing.text.AbstractDocument) areaB.getDocument()).setDocumentFilter(new javax.swing.text.DocumentFilter() {
-            private final int MAX_COLS = 30;
-            private final int MAX_LINES = 1;
+            private final int MAX_COLS = 20;
+            private final int MAX_LINES = 3;
             @Override
             public void insertString(FilterBypass fb, int offset, String string, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
                 StringBuilder sb = new StringBuilder(areaB.getText());
@@ -988,23 +988,20 @@ public class CalculatorApp {
         });
         JScrollPane scrollB = new JScrollPane(areaB);
         scrollB.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollB.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         scrollB.setBorder(BorderFactory.createEmptyBorder());
-        scrollB.setPreferredSize(areaB.getPreferredSize());
+        scrollB.setPreferredSize(new Dimension(360, 80));
         scrollB.setOpaque(false);
         scrollB.getViewport().setOpaque(false);
+        leftPanel.add(scrollB, "gapbottom 10");
 
-        // Add to left panel
-        leftPanel.add(labelA, "align right, aligny center, gapx 15");
-        leftPanel.add(scrollA, "wrap");
-        leftPanel.add(labelB, "align right, gapy 20, gapx 15");
-        leftPanel.add(scrollB, "gaptop 20");
         // Add tolerance field below matrix/vector input
         JLabel tolLabel = new JLabel("Tolerance");
         tolLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
         JTextField tolField = new JTextField(36);
         tolField.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
-        leftPanel.add(tolLabel, "span 2, align left, gaptop 10");
-        leftPanel.add(tolField, "span 2, align left");
+        leftPanel.add(tolLabel, "align left, gaptop 10");
+        leftPanel.add(tolField, "align left");
         panel.add(leftPanel, "grow");
 
         // Right side - Solution display

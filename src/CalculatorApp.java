@@ -351,7 +351,9 @@ public class CalculatorApp {
                 solutionStr += "x" + (i)  +" = " + funcStr.replace("x", "(" + answer.get(i) + ")") + "\n";
                 solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n\n";
             }
-            
+            for(int i = 0; i < answer.size(); i++){
+                solutionStr += "Iteration No. " + i + ":\t\tx" + i + " = " + answer.get(i) + "\n";
+            }
             solution.setText(solutionStr);
             history.push(new Tuple<>(funcStr, solutionStr));
         });

@@ -98,19 +98,59 @@ public class CalculatorApp {
     }
 
     private JPanel historyPanel() {
-        JPanel panel = new JPanel(new MigLayout("fill, insets 40 40 40 40"));
+        JPanel panel = new JPanel(new MigLayout("fill, insets 40 40 40 40", "[grow 30][grow 70]", ""));
         panel.setBackground(new Color(0xF7F3F0));
         JLabel header = new JLabel("History");
         header.setFont(new Font("Bodoni MT", Font.BOLD, 24));
         header.setForeground(new Color(0x6B232C));
-        panel.add(header, "wrap");
+        panel.add(header, "wrap, span 2");
+
+        // Left: List of equations
         JList<String> historyList = new JList<>(historyListModel);
         historyList.setFont(new Font("Monospaced", Font.PLAIN, 16));
-        JScrollPane scroll = new JScrollPane(historyList);
-        scroll.setPreferredSize(new Dimension(800, 400));
-        panel.add(scroll, "growx, growy");
-        
-        
+        JScrollPane scrollList = new JScrollPane(historyList);
+        scrollList.setPreferredSize(new Dimension(240, 400));
+        panel.add(scrollList, "growy, width 240:240:320");
+
+        // Right: Solution display
+        JTextArea solutionArea = new JTextArea();
+        solutionArea.setFont(new Font("Monospaced", Font.PLAIN, 16));
+        solutionArea.setEditable(false);
+        solutionArea.setLineWrap(true);
+        solutionArea.setWrapStyleWord(true);
+        solutionArea.setBorder(BorderFactory.createCompoundBorder(
+            new RoundedBorder(12),
+            BorderFactory.createEmptyBorder(8, 6, 8, 6)
+        ));
+        solutionArea.setBackground(Color.WHITE);
+        JScrollPane scrollSolution = new JScrollPane(solutionArea);
+        scrollSolution.setPreferredSize(new Dimension(600, 400));
+        panel.add(scrollSolution, "grow, pushx, span 1");
+
+        // Show solution when an equation is selected
+        historyList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                String selected = historyList.getSelectedValue();
+                if (selected != null) {
+                    StringBuilder sb = new StringBuilder();
+                    int count = 1;
+                    for (int i = history.size() - 1; i >= 0; i--) {
+                        Tuple<String, String> entry = history.get(i);
+                        if (entry.getX().equals(selected)) {
+                            sb.append("Solution #").append(count).append(":\n");
+                            sb.append(entry.getY()).append("\n");
+                            sb.append("-----------------------------\n");
+                            count++;
+                        }
+                    }
+                    if (sb.length() == 0) {
+                        solutionArea.setText("");
+                    } else {
+                        solutionArea.setText(sb.toString());
+                    }
+                }
+            }
+        });
         return panel;
     }
 
@@ -304,11 +344,12 @@ public class CalculatorApp {
             historyListModel.insertElementAt(funcStr, 0);
             System.out.println(answer);
             String solutionStr = "";
-            solutionStr += "x0 = " + answer.get(0) + "\n";
+            solutionStr += "Initial Guess:\n";
+            solutionStr += "x0: " + answer.get(0) + "\n\n";
             for(int i = 1; i < answer.size(); i++){
                 solutionStr += "Iteration No. " + i + ":\n";
-                solutionStr += "x" + (i)  +" = " + funcStr.replace("x", "(" + answer.get(i - 1) + ")") + "\n";
-                solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n";
+                solutionStr += "x" + (i)  +" = " + funcStr.replace("x", "(" + answer.get(i) + ")") + "\n";
+                solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n\n";
             }
             
             solution.setText(solutionStr);
@@ -380,15 +421,9 @@ public class CalculatorApp {
             historyListModel.insertElementAt(funcStr, 0);
             List<Double> answer = methods.newtonRaphson(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>());
             
-            String solutionStr = "";
-            solutionStr += "x0 = " + answer.get(0) + "\n";
-            for(int i = 1; i < answer.size(); i++){
-                solutionStr += "x" + (i)  +" = " + answer.get(i - 1) + " - (" + funcStr.replace("x", "(" + answer.get(i - 1) + ")") + ")" + "/ f`(" + answer.get(i - 1) + ")" + "\n";
-                solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n";
+            for(int i = 0; i < answer.size(); i++){
+                solution.append("x" + i +": " + answer.get(i) + "\n");
             }
-            
-            solution.setText(solutionStr);
-            history.push(new Tuple<>(funcStr, solutionStr));
             System.out.println(answer);
         });
         panel.add(calc, "span 2, align left, gaptop 10");
@@ -461,16 +496,9 @@ public class CalculatorApp {
             historyListModel.insertElementAt(funcStr, 0);
             List<Double> answer = methods.secant(methods.parseEquation(funcStr), Double.parseDouble(x0Str), Double.parseDouble(x1Str), new LinkedList<Double>());
             
-            String solutionStr = "";
-            solutionStr += "x0 = " + answer.get(0) + "\n";
-            solutionStr += "x1 = " + answer.get(1) + "\n";
-            for(int i = 2; i < answer.size(); i++){
-                solutionStr += "x" + (i)  +" = " + answer.get(i - 1) + " - (" + funcStr.replace("x", "(" + answer.get(i - 1) + ")") + ") * (" + answer.get(i - 1) + " - " + answer.get(i - 2) + ")" + "/ (" + funcStr.replace("x", "(" + answer.get(i - 1) + ")") + " - " + funcStr.replace("x", "(" + answer.get(i - 2) + ")") + ")\n";
-                solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n";
+            for(int i = 0; i < answer.size(); i++){
+                solution.append("x" + i +": " + answer.get(i) + "\n");
             }
-            
-            solution.setText(solutionStr);
-            history.push(new Tuple<>(funcStr, solutionStr));
             System.out.println(answer);
         });
         panel.add(calc, "span 2, align left, gaptop 10");
@@ -543,14 +571,9 @@ public class CalculatorApp {
             historyListModel.insertElementAt(funcStr, 0);
             List<Tuple<Double, Double>> answer = methods.bisection(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Tuple<Double, Double>>());
             
-            String solutionStr = "";
-            solutionStr += "xL0 = " + answer.get(0).getX() + ", xR0 = " + answer.get(0).getY() + "\n";
-            for(int i = 1; i < answer.size(); i++){
-                
+            for(int i = 0; i < answer.size(); i++){
+                solution.append("x" + i +": " + answer.get(i).getX() + " " + answer.get(i).getY() + "\n");
             }
-            
-            solution.setText(solutionStr);
-            history.push(new Tuple<>(funcStr, solutionStr));
             System.out.println(answer);
         });
         panel.add(calc, "span 2, align left, gaptop 10");
@@ -900,34 +923,32 @@ public class CalculatorApp {
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
         panel.add(header, "span 2");
-        JLabel desc = new JLabel("Enter your matrix A (separated by ENTER) and vector B (separated by SPACE) below.");
+        JLabel desc = new JLabel("Enter your matrix A and vector B below.");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
         panel.add(desc, "span 2, wrap, gapbottom 10");
 
         // Left side - Input form
-        JPanel leftPanel = new JPanel(new MigLayout("fillx, wrap 2, gap 10", "[][grow]"));
+        JPanel leftPanel = new JPanel(new MigLayout("wrap 1, fillx, gap 10", "[grow]", ""));
         leftPanel.setBackground(new Color(0xF7F3F0));
 
-        // Label and text area for A (tall, narrow)
-        JLabel labelA = new JLabel("A =");
+        // Label and text area for A
+        JLabel labelA = new JLabel("A");
         labelA.setFont(new Font("Bodoni MT", Font.BOLD, 18));
-        labelA.setHorizontalAlignment(SwingConstants.RIGHT);
-        JTextArea areaA = new RoundedTextArea(4, 7, 32);
-        areaA.setFont(new Font("Monospaced", Font.PLAIN, 16));
+        labelA.setHorizontalAlignment(SwingConstants.LEFT);
+        leftPanel.add(labelA, "align left, gapbottom 2");
+        JTextArea areaA = new RoundedTextArea(3, 30, 18);
+        areaA.setFont(new Font("Monospaced", Font.PLAIN, 14));
         areaA.setLineWrap(true);
         areaA.setWrapStyleWord(true);
         areaA.setBorder(BorderFactory.createCompoundBorder(
-            new RoundedBorder(32),
+            new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
         ));
         areaA.setBackground(Color.WHITE);
-        int rowHeight = areaA.getFontMetrics(areaA.getFont()).getHeight();
-        int areaAHeight = rowHeight * 3 + 24;
-        areaA.setPreferredSize(new Dimension(90, areaAHeight));
-        // Limit to 6 lines, 8 columns
+        // Limit to 3 lines, 20 columns
         ((javax.swing.text.AbstractDocument) areaA.getDocument()).setDocumentFilter(new javax.swing.text.DocumentFilter() {
-            private final int MAX_COLS = 6;
-            private final int MAX_LINES = 4;
+            private final int MAX_COLS = 20;
+            private final int MAX_LINES = 3;
             @Override
             public void insertString(FilterBypass fb, int offset, String string, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
                 StringBuilder sb = new StringBuilder(areaA.getText());
@@ -956,29 +977,31 @@ public class CalculatorApp {
         });
         JScrollPane scrollA = new JScrollPane(areaA);
         scrollA.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollA.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         scrollA.setBorder(BorderFactory.createEmptyBorder());
-        scrollA.setPreferredSize(areaA.getPreferredSize());
+        scrollA.setPreferredSize(new Dimension(360, 80));
         scrollA.setOpaque(false);
         scrollA.getViewport().setOpaque(false);
+        leftPanel.add(scrollA, "gapbottom 10");
 
-        // Label and text area for B (short, wide)
-        JLabel labelB = new JLabel("B =");
-        labelB.setFont(new Font("Bodoni MT", Font.PLAIN, 18));
-        labelB.setHorizontalAlignment(SwingConstants.RIGHT);
-        JTextArea areaB = new RoundedTextArea(1, 30, 32);
-        areaB.setFont(new Font("Monospaced", Font.PLAIN, 16));
+        // Label and text area for B
+        JLabel labelB = new JLabel("B");
+        labelB.setFont(new Font("Bodoni MT", Font.BOLD, 18));
+        labelB.setHorizontalAlignment(SwingConstants.LEFT);
+        leftPanel.add(labelB, "align left, gapbottom 2");
+        JTextArea areaB = new RoundedTextArea(3, 30, 18);
+        areaB.setFont(new Font("Monospaced", Font.PLAIN, 14));
         areaB.setLineWrap(true);
         areaB.setWrapStyleWord(true);
         areaB.setBorder(BorderFactory.createCompoundBorder(
-            new RoundedBorder(32),
+            new RoundedBorder(12),
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
         ));
         areaB.setBackground(Color.WHITE);
-        areaB.setPreferredSize(new Dimension(320, 48));
-        // Limit to 1 line, 30 columns
+        // Limit to 3 lines, 20 columns
         ((javax.swing.text.AbstractDocument) areaB.getDocument()).setDocumentFilter(new javax.swing.text.DocumentFilter() {
-            private final int MAX_COLS = 30;
-            private final int MAX_LINES = 1;
+            private final int MAX_COLS = 20;
+            private final int MAX_LINES = 3;
             @Override
             public void insertString(FilterBypass fb, int offset, String string, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
                 StringBuilder sb = new StringBuilder(areaB.getText());
@@ -1007,23 +1030,20 @@ public class CalculatorApp {
         });
         JScrollPane scrollB = new JScrollPane(areaB);
         scrollB.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollB.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         scrollB.setBorder(BorderFactory.createEmptyBorder());
-        scrollB.setPreferredSize(areaB.getPreferredSize());
+        scrollB.setPreferredSize(new Dimension(360, 80));
         scrollB.setOpaque(false);
         scrollB.getViewport().setOpaque(false);
+        leftPanel.add(scrollB, "gapbottom 10");
 
-        // Add to left panel
-        leftPanel.add(labelA, "align right, aligny center, gapx 15");
-        leftPanel.add(scrollA, "wrap");
-        leftPanel.add(labelB, "align right, gapy 20, gapx 15");
-        leftPanel.add(scrollB, "gaptop 20");
         // Add tolerance field below matrix/vector input
         JLabel tolLabel = new JLabel("Tolerance");
         tolLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
         JTextField tolField = new JTextField(36);
         tolField.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
-        leftPanel.add(tolLabel, "span 2, align left, gaptop 10");
-        leftPanel.add(tolField, "span 2, align left");
+        leftPanel.add(tolLabel, "align left, gaptop 10");
+        leftPanel.add(tolField, "align left");
         panel.add(leftPanel, "grow");
 
         // Right side - Solution display

@@ -698,41 +698,30 @@ public class CalculatorApp {
 
         JButton calc = calcButton();
         calc.addActionListener(e -> {
+            solution.setText("");
             try {
-                String[] eqns = equations.getText().split("\\n");
-                StringBuilder result = new StringBuilder("Result:\n");
+                double[][] matrix = methods.parseMatrixEquation(equations.getText());
                 if (methodName.equals("Matrix Method")) {
-                    // Parse equations into matrix form
-                    double[][] matrix = parseEquationsToMatrix(eqns);
-                    result.append(methods.cramer(matrix));
+                    
                 } else if (methodName.equals("Cramer's Rule")) {
-                    // Parse equations into matrix form
-                    double[][] matrix = parseEquationsToMatrix(eqns);
-                    result.append(methods.cramer(matrix));
+                    double[] answer = methods.cramer(matrix);
+                    
+                    solution.append("x = " + answer[0] + "\n");
+                    solution.append("y = " + answer[1] + "\n");
+                    solution.append("z = " + answer[2] + "\n");
+                    
                 } else if (methodName.equals("Jacobi Method")) {
-                    // Parse equations into matrix and initial guess
-                    double[][] matrix = parseEquationsToMatrix(eqns);
-                    List<Double[]> initialGuess = new ArrayList<>();
-                    // Add a default initial guess of zeros
-                    Double[] guess = new Double[matrix.length];
-                    Arrays.fill(guess, 0.0);
-                    initialGuess.add(guess);
-                    result.append(methods.jacobi(matrix, initialGuess));
+                    
                 } else if (methodName.equals("Gaussian Elimination")) {
-                    // Parse equations into matrix form
-                    double[][] matrix = parseEquationsToMatrix(eqns);
-                    result.append(methods.cramer(matrix));
+                    double[] answer = methods.gaussianElimination(matrix);
+                    
+                    solution.append("x = " + answer[0] + "\n");
+                    solution.append("y = " + answer[1] + "\n");
+                    solution.append("z = " + answer[2] + "\n");
                 } else if (methodName.equals("Gauss-Seidel Method")) {
-                    // Parse equations into matrix and initial guess
-                    double[][] matrix = parseEquationsToMatrix(eqns);
-                    List<Double[]> initialGuess = new ArrayList<>();
-                    // Add a default initial guess of zeros
-                    Double[] guess = new Double[matrix.length];
-                    Arrays.fill(guess, 0.0);
-                    initialGuess.add(guess);
-                    result.append(methods.gaussSeidel(matrix, initialGuess));
+                   
                 }
-                solution.setText(result.toString());
+                
             } catch (Exception ex) {
                 solution.setText("Error:\n" + ex.getMessage());
             }

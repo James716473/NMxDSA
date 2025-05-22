@@ -218,7 +218,7 @@ public class Methods {
     }
 
     //dapat iparse muna as matrix
-    public double[] guassianElimination(double[][] matrix){
+    public double[] gaussianElimination(double[][] matrix){
         
         
         for(int i = 0; i < matrix.length; i++){
@@ -368,9 +368,10 @@ public class Methods {
         return new ExpressionBuilder(equation).variable("x").build();
     }
     
-    
-    public double[][] parseEquation(String[] equations){
+    // need a error handling if the input is not 3 equations.
+    public double[][] parseMatrixEquation(String equation){
         double[][] matrix = new double[3][4];
+        String[] equations = equation.split("\\n");
         for(int i = 0; i < equations.length; i++){
             String[] parsedEquation = new String[2];
             equations[i].indexOf('=');

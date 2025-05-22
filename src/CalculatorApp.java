@@ -620,7 +620,7 @@ public class CalculatorApp {
         JPanel leftPanel = new JPanel(new MigLayout("wrap 1, gap 10", "[]", "[]"));
         leftPanel.setBackground(new Color(0xF7F3F0));
         JTextArea equations = new JTextArea(3, 40);
-        equations.setFont(new Font("Monospaced", Font.PLAIN, 15));
+        equations.setFont(new Font("Monospaced", Font.PLAIN, 14));
         equations.setLineWrap(true);
         equations.setWrapStyleWord(true);
         equations.setBorder(BorderFactory.createCompoundBorder(
@@ -711,8 +711,18 @@ public class CalculatorApp {
         tolLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
         JTextField tolField = new JTextField(36);
         tolField.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
-        leftPanel.add(tolLabel, "align left, gaptop 10");
+        leftPanel.add(tolLabel, "align left, gaptop 5");
         leftPanel.add(tolField, "align left");
+        // Add max iterations field for Jacobi and Gauss-Seidel
+        JTextField maxIterField = null;
+        if (methodName.equals("Jacobi Method") || methodName.equals("Gauss-Seidel Method")) {
+            JLabel maxIterLabel = new JLabel("Max Iterations");
+            maxIterLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
+            maxIterField = new JTextField(36);
+            maxIterField.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
+            leftPanel.add(maxIterLabel, "align left, gaptop 5");
+            leftPanel.add(maxIterField, "align left");
+        }
         panel.add(leftPanel, "grow");
 
         // Right side - Solution display

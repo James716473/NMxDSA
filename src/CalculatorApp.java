@@ -334,33 +334,38 @@ public class CalculatorApp {
 
         JButton calc = calcButton();
         calc.addActionListener(e -> {
-            solution.setText("");
-            String funcStr = func.getText();
-            String guessStr = guess.getText();
-            String tolStr = tol.getText();
-            String maxIterStr = maxIter.getText();
-            methods.setMaxIteration(Integer.parseInt(maxIterStr));
-            methods.setTolerance(new BigDecimal(tolStr));
-            List<Double> answer = methods.fixedPoint(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>());
-            
-            historyListModel.insertElementAt(funcStr, 0);
-            System.out.println(answer);
-            String solutionStr = "";
-            solutionStr += "Initial Guess:\n";
-            solutionStr += "x0: " + answer.get(0) + "\n\n";
-            for(int i = 1; i < answer.size(); i++){
-                solutionStr += "Iteration No. " + i + ":\n";
-                solutionStr += "x" + (i)  +" = " + funcStr.replace("x", "(" + answer.get(i) + ")") + "\n";
-                solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n\n";
+            try{
+                solution.setText("");
+                String funcStr = func.getText();
+                String guessStr = guess.getText();
+                String tolStr = tol.getText();
+                String maxIterStr = maxIter.getText();
+                methods.setMaxIteration(Integer.parseInt(maxIterStr));
+                methods.setTolerance(new BigDecimal(tolStr));
+                List<Double> answer = methods.fixedPoint(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>());
+                
+                historyListModel.insertElementAt(funcStr, 0);
+                System.out.println(answer);
+                String solutionStr = "";
+                solutionStr += "Initial Guess:\n";
+                solutionStr += "x0: " + answer.get(0) + "\n\n";
+                for(int i = 1; i < answer.size(); i++){
+                    solutionStr += "Iteration No. " + i + ":\n";
+                    solutionStr += "x" + (i)  +" = " + funcStr.replace("x", "(" + answer.get(i) + ")") + "\n";
+                    solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n\n";
+                }
+                solutionStr += "Table\n";
+                for(int i = 0; i < answer.size(); i++){
+                    solutionStr += "Iteration No. " + i + ":\t\tx" + i + " = " + answer.get(i) + "\n";
+                }
+                solutionStr += "\nRoot: " + answer.get(answer.size() - 1) + "\n";
+                
+                solution.setText(solutionStr);
+                history.push(new Tuple<>(funcStr, solutionStr));
+            } catch(Exception ex){
+                solution.setText("Error:\n" + ex.getMessage());
             }
-            solutionStr += "Table\n";
-            for(int i = 0; i < answer.size(); i++){
-                solutionStr += "Iteration No. " + i + ":\t\tx" + i + " = " + answer.get(i) + "\n";
-            }
-            solutionStr += "\nRoot: " + answer.get(answer.size() - 1) + "\n";
             
-            solution.setText(solutionStr);
-            history.push(new Tuple<>(funcStr, solutionStr));
         });
         panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
@@ -419,32 +424,37 @@ public class CalculatorApp {
 
         JButton calc = calcButton();
         calc.addActionListener(e -> {
-            solution.setText("");
-            String funcStr = func.getText();
-            String guessStr = guess.getText();
-            String tolStr = tol.getText();
-            String maxIterStr = maxIter.getText();
-            methods.setMaxIteration(Integer.parseInt(maxIterStr));
-            methods.setTolerance(new BigDecimal(tolStr));
-            historyListModel.insertElementAt(funcStr, 0);
-            List<Double> answer = methods.newtonRaphson(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>());
+            try{
+                solution.setText("");
+                String funcStr = func.getText();
+                String guessStr = guess.getText();
+                String tolStr = tol.getText();
+                String maxIterStr = maxIter.getText();
+                methods.setMaxIteration(Integer.parseInt(maxIterStr));
+                methods.setTolerance(new BigDecimal(tolStr));
+                historyListModel.insertElementAt(funcStr, 0);
+                List<Double> answer = methods.newtonRaphson(methods.parseEquation(funcStr), Double.parseDouble(guessStr), new LinkedList<Double>());
+                
+                String solutionStr = "";
+                solutionStr += "Initial Guess:\n";
+                solutionStr += "x0: " + answer.get(0) + "\n\n";
+                for(int i = 1; i < answer.size(); i++){
+                    solutionStr += "Iteration No. " + i + ":\n";
+                    solutionStr += "x" + (i)  +" = " + answer.get(i-1) + " - (" + funcStr.replace("x", "(" + answer.get(i-1) + ")") + ") / ((d/dx)(" + funcStr.replace("x", "x" + (i-1)) + "))" + "\n";
+                    solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n\n";
+                }
+                solutionStr += "Table\n";
+                for(int i = 0; i < answer.size(); i++){
+                    solutionStr += "Iteration No. " + i + ":\t\tx" + i + " = " + answer.get(i) + "\n";
+                }
+                solutionStr += "\nRoot: " + answer.get(answer.size() - 1) + "\n";
+                solution.setText(solutionStr);
+                history.push(new Tuple<>(funcStr, solutionStr));
+                System.out.println(answer);
+            } catch(Exception ex){
+                solution.setText("Error:\n" + ex.getMessage());
+            }
             
-            String solutionStr = "";
-            solutionStr += "Initial Guess:\n";
-            solutionStr += "x0: " + answer.get(0) + "\n\n";
-            for(int i = 1; i < answer.size(); i++){
-                solutionStr += "Iteration No. " + i + ":\n";
-                solutionStr += "x" + (i)  +" = " + answer.get(i-1) + " - (" + funcStr.replace("x", "(" + answer.get(i-1) + ")") + ") / ((d/dx)(" + funcStr.replace("x", "x" + (i-1)) + "))" + "\n";
-                solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n\n";
-            }
-            solutionStr += "Table\n";
-            for(int i = 0; i < answer.size(); i++){
-                solutionStr += "Iteration No. " + i + ":\t\tx" + i + " = " + answer.get(i) + "\n";
-            }
-            solutionStr += "\nRoot: " + answer.get(answer.size() - 1) + "\n";
-            solution.setText(solutionStr);
-            history.push(new Tuple<>(funcStr, solutionStr));
-            System.out.println(answer);
         });
         panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
@@ -506,34 +516,39 @@ public class CalculatorApp {
 
         JButton calc = calcButton();
         calc.addActionListener(e -> {
-            solution.setText("");
-            String funcStr = func.getText();
-            String x0Str = x0.getText();
-            String x1Str = x1.getText();
-            String tolStr = tol.getText();
-            String maxIterStr = maxIter.getText();
-            methods.setMaxIteration(Integer.parseInt(maxIterStr));
-            methods.setTolerance(new BigDecimal(tolStr));
-            historyListModel.insertElementAt(funcStr, 0);
-            List<Double> answer = methods.secant(methods.parseEquation(funcStr), Double.parseDouble(x0Str), Double.parseDouble(x1Str), new LinkedList<Double>());
+            try{
+                solution.setText("");
+                String funcStr = func.getText();
+                String x0Str = x0.getText();
+                String x1Str = x1.getText();
+                String tolStr = tol.getText();
+                String maxIterStr = maxIter.getText();
+                methods.setMaxIteration(Integer.parseInt(maxIterStr));
+                methods.setTolerance(new BigDecimal(tolStr));
+                historyListModel.insertElementAt(funcStr, 0);
+                List<Double> answer = methods.secant(methods.parseEquation(funcStr), Double.parseDouble(x0Str), Double.parseDouble(x1Str), new LinkedList<Double>());
+                
+                String solutionStr = "";
+                solutionStr += "Initial Guesses:\n";
+                solutionStr += "x0: " + answer.get(0) + "\n";
+                solutionStr += "x1: " + answer.get(1) + "\n\n";
+                for(int i = 2; i < answer.size(); i++){
+                    solutionStr += "Iteration No. " + (i-1) + ":\n";
+                    solutionStr += "x" + (i)  +" = " + answer.get(i-1) + " - (" + funcStr.replace("x", "(" + answer.get(i-1) + ")") + ") * ((" + answer.get(i-1) + " - " + answer.get(i-2) + ") / (" + funcStr.replace("x", "(" + answer.get(i-1) + ")") + " - (" + funcStr.replace("x", "(" + answer.get(i-2) + ")") + "))" + "\n";
+                    solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n\n";
+                }
+                solutionStr += "Table\n";
+                for(int i = 0; i < answer.size() - 1; i++){
+                    solutionStr += "Iteration No. " + i + ":\t\tx0 = " + answer.get(i) + "\t\tx1 = " + answer.get(i+1) + "\n";
+                }
+                solutionStr += "\nRoot: " + answer.get(answer.size() - 1) + "\n";
+                solution.setText(solutionStr);
+                history.push(new Tuple<>(funcStr, solutionStr));
+                System.out.println(answer);
+            } catch(Exception ex){
+                solution.setText("Error:\n" + ex.getMessage());
+            }
             
-            String solutionStr = "";
-            solutionStr += "Initial Guesses:\n";
-            solutionStr += "x0: " + answer.get(0) + "\n";
-            solutionStr += "x1: " + answer.get(1) + "\n\n";
-            for(int i = 2; i < answer.size(); i++){
-                solutionStr += "Iteration No. " + (i-1) + ":\n";
-                solutionStr += "x" + (i)  +" = " + answer.get(i-1) + " - (" + funcStr.replace("x", "(" + answer.get(i-1) + ")") + ") * ((" + answer.get(i-1) + " - " + answer.get(i-2) + ") / (" + funcStr.replace("x", "(" + answer.get(i-1) + ")") + " - (" + funcStr.replace("x", "(" + answer.get(i-2) + ")") + "))" + "\n";
-                solutionStr += "x" + (i)  +" = " + answer.get(i) + "\n\n";
-            }
-            solutionStr += "Table\n";
-            for(int i = 0; i < answer.size() - 1; i++){
-                solutionStr += "Iteration No. " + i + ":\t\tx0 = " + answer.get(i) + "\t\tx1 = " + answer.get(i+1) + "\n";
-            }
-            solutionStr += "\nRoot: " + answer.get(answer.size() - 1) + "\n";
-            solution.setText(solutionStr);
-            history.push(new Tuple<>(funcStr, solutionStr));
-            System.out.println(answer);
         });
         panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
@@ -595,37 +610,42 @@ public class CalculatorApp {
 
         JButton calc = calcButton();
         calc.addActionListener(e -> {
-            solution.setText("");
-            String funcStr = func.getText();
-            String aStr = a.getText();
-            String bStr = b.getText();
-            String tolStr = tol.getText();
-            String maxIterStr = maxIter.getText();
-            methods.setMaxIteration(Integer.parseInt(maxIterStr));
-            methods.setTolerance(new BigDecimal(tolStr));
-            historyListModel.insertElementAt(funcStr, 0);
-            List<Double[]> answer = methods.bisection(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Double[]>());
-            
-            String solutionStr = "";
-            solutionStr += "Initial Guesses:\n";
-            solutionStr += "xL: " + answer.get(0)[0] + "\t\txR: " + answer.get(0)[1] + "\n\n";
-            for(int i = 0; i < answer.size(); i++){
-                solutionStr += "Iteration No. " + (i) + ":\n";
-                solutionStr += "xM = (" + answer.get(i)[0] + " + " + answer.get(i)[1] + ") / 2\n";
-                solutionStr += "xM = " + answer.get(i)[3] + "\n";
-                solutionStr += "f(xM) = " + funcStr.replace("x", "(" + answer.get(i)[3] + ")") + "\n";
-                solutionStr += "f(xM) = " + answer.get(i)[2] + "\n\n";
+            try{
+                solution.setText("");
+                String funcStr = func.getText();
+                String aStr = a.getText();
+                String bStr = b.getText();
+                String tolStr = tol.getText();
+                String maxIterStr = maxIter.getText();
+                methods.setMaxIteration(Integer.parseInt(maxIterStr));
+                methods.setTolerance(new BigDecimal(tolStr));
+                historyListModel.insertElementAt(funcStr, 0);
+                List<Double[]> answer = methods.bisection(methods.parseEquation(funcStr), Double.parseDouble(aStr), Double.parseDouble(bStr), new LinkedList<Double[]>());
+                
+                String solutionStr = "";
+                solutionStr += "Initial Guesses:\n";
+                solutionStr += "xL: " + answer.get(0)[0] + "\t\txR: " + answer.get(0)[1] + "\n\n";
+                for(int i = 0; i < answer.size(); i++){
+                    solutionStr += "Iteration No. " + (i) + ":\n";
+                    solutionStr += "xM = (" + answer.get(i)[0] + " + " + answer.get(i)[1] + ") / 2\n";
+                    solutionStr += "xM = " + answer.get(i)[3] + "\n";
+                    solutionStr += "f(xM) = " + funcStr.replace("x", "(" + answer.get(i)[3] + ")") + "\n";
+                    solutionStr += "f(xM) = " + answer.get(i)[2] + "\n\n";
+                }
+                solutionStr += "Table\n";
+                
+    
+                for(int i = 0; i < answer.size(); i++){
+                    solutionStr += "Iteration No. " + (i) + ":\t\txL = " + answer.get(i)[0] + "\t\txR = " + answer.get(i)[1] + "\t\txM = " + answer.get(i)[3] + "\t\tf(xM) = " + answer.get(i)[2] + "\n";
+                }
+                solutionStr += "\nRoot: " + answer.get(answer.size() - 1)[0] + "\n";
+                solution.setText(solutionStr);
+                history.push(new Tuple<>(funcStr, solutionStr));
+                System.out.println(answer);
+            } catch(Exception ex){
+                solution.setText("Error:\n" + ex.getMessage());
             }
-            solutionStr += "Table\n";
             
-
-            for(int i = 0; i < answer.size(); i++){
-                solutionStr += "Iteration No. " + (i) + ":\t\txL = " + answer.get(i)[0] + "\t\txR = " + answer.get(i)[1] + "\t\txM = " + answer.get(i)[3] + "\t\tf(xM) = " + answer.get(i)[2] + "\n";
-            }
-            solutionStr += "\nRoot: " + answer.get(answer.size() - 1)[0] + "\n";
-            solution.setText(solutionStr);
-            history.push(new Tuple<>(funcStr, solutionStr));
-            System.out.println(answer);
         });
         panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
@@ -687,7 +707,8 @@ public class CalculatorApp {
 
         JButton calc = calcButton();
         calc.addActionListener(e -> {
-            solution.setText("");
+            try{
+                solution.setText("");
             String funcStr = func.getText();
             String aStr = a.getText();
             String bStr = b.getText();
@@ -716,6 +737,10 @@ public class CalculatorApp {
             solution.setText(solutionStr);
             history.push(new Tuple<>(funcStr, solutionStr));
             System.out.println(Arrays.deepToString(answer.toArray()));
+            } catch(Exception ex){
+                solution.setText("Error:\n" + ex.getMessage());
+            }
+            
         });
         panel.add(calc, "span 2, align left, gaptop 10");
         return panel;
@@ -885,9 +910,8 @@ public class CalculatorApp {
             solution.setText("");
             try {
                 double[][] matrix = methods.parseMatrixEquation(equations.getText());
-                if (methodName.equals("Matrix Method")) {
-                    
-                } else if (methodName.equals("Cramer's Rule")) {
+                historyListModel.insertElementAt(equations.getText(), 0);
+                if (methodName.equals("Cramer's Rule")) {
                     double[] answer = methods.cramer(matrix, solution);
                     methods.setTolerance(new BigDecimal(tolField.getText()));
                     solution.append("x = " + answer[0] + "\n");
@@ -900,22 +924,30 @@ public class CalculatorApp {
                     methods.setMaxIteration(Integer.parseInt(maxIterField.getText()));
                     List<Double[]> answer = methods.jacobi(matrix, new LinkedList<Double[]>());
                     for(int i = 0; i < answer.size(); i++){
-                        solution.append("x" + i +": " + answer.get(i)[0] + " y" + i + ": " + answer.get(i)[1] + " z" + i + ": " + answer.get(i)[2] + "\n");
+                        solution.append("Iteration No. " + (i) + ":\tx" + i +": " + answer.get(i)[0] + "\ty" + i + ": " + answer.get(i)[1] + "\tz" + i + ": " + answer.get(i)[2] + "\n");
                     }
+                    
+                    solution.append("\nRoot: " + answer.get(answer.size() - 1)[0] + ", " + answer.get(answer.size() - 1)[1] + ", " + answer.get(answer.size() - 1)[2] + "\n");
+                    history.push(new Tuple<>(equations.getText(), solution.getText()));
+
                 } else if (methodName.equals("Gaussian Elimination")) {
                     double[] answer = methods.gaussianElimination(matrix, solution);
                     methods.setTolerance(new BigDecimal(tolField.getText()));
                     solution.append("x = " + answer[0] + "\n");
                     solution.append("y = " + answer[1] + "\n");
                     solution.append("z = " + answer[2] + "\n");
+                    history.push(new Tuple<>(equations.getText(), solution.getText()));
                 } else if (methodName.equals("Gauss-Seidel Method")) {
                     Double[] guess = {Double.parseDouble(guessX.getText()), Double.parseDouble(guessY.getText()), Double.parseDouble(guessZ.getText())};
                     methods.setTolerance(new BigDecimal(tolField.getText()));
                     methods.setMaxIteration(Integer.parseInt(maxIterField.getText()));
                     List<Double[]> answer = methods.gaussSeidel(matrix, guess, new LinkedList<Double[]>());
+                    
                     for(int i = 0; i < answer.size(); i++){
-                        solution.append("x" + i +": " + answer.get(i)[0] + " y" + i + ": " + answer.get(i)[1] + " z" + i + ": " + answer.get(i)[2] + "\n");
+                        solution.append("Iteration No. " + (i) + ":\tx" + i +": " + answer.get(i)[0] + "\ty" + i + ": " + answer.get(i)[1] + "\tz" + i + ": " + answer.get(i)[2] + "\n");
                     }
+                    solution.append("\nRoot: " + answer.get(answer.size() - 1)[0] + ", " + answer.get(answer.size() - 1)[1] + ", " + answer.get(answer.size() - 1)[2] + "\n");
+                    history.push(new Tuple<>(equations.getText(), solution.getText()));
                 }
                 
             } catch (Exception ex) {

@@ -402,9 +402,12 @@ public class Methods {
         nextGuess[0] = (-matrix[0][1] * guess[1] + -matrix[0][2] * guess[2] + matrix[0][3]) / matrix[0][0];
         nextGuess[1] = (-matrix[1][0] * guess[0] + -matrix[1][2] * guess[2] + matrix[1][3]) / matrix[1][1];
         nextGuess[2] = (-matrix[2][0] * guess[0] + -matrix[2][1] * guess[1] + matrix[2][3]) / matrix[2][2];
-        System.out.println(Arrays.toString(nextGuess));
+        
         if(Math.abs(nextGuess[0] - guess[0]) < tolerance.doubleValue() && Math.abs(nextGuess[1] - guess[1]) < tolerance.doubleValue() && Math.abs(nextGuess[2] - guess[2]) < tolerance.doubleValue()){
-            
+            nextGuess[0] = new BigDecimal(nextGuess[0]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            nextGuess[1] = new BigDecimal(nextGuess[1]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            nextGuess[2] = new BigDecimal(nextGuess[2]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+            xyz.add(nextGuess);
             return xyz;
         } else {
             nextGuess[0] = new BigDecimal(nextGuess[0]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
@@ -453,8 +456,12 @@ public class Methods {
         nextGuess[0] = (-matrix[0][1] * guess[1] + -matrix[0][2] * guess[2] + matrix[0][3]) / matrix[0][0];
         nextGuess[1] = (-matrix[1][0] * nextGuess[0] + -matrix[1][2] * guess[2] + matrix[1][3]) / matrix[1][1];
         nextGuess[2] = (-matrix[2][0] * nextGuess[0] + -matrix[2][1] * nextGuess[1] + matrix[2][3]) / matrix[2][2];
+        nextGuess[0] = new BigDecimal(nextGuess[0]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+        nextGuess[1] = new BigDecimal(nextGuess[1]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
+        nextGuess[2] = new BigDecimal(nextGuess[2]).divide(tolerance, 0, RoundingMode.HALF_UP).multiply(tolerance).doubleValue();
         System.out.println(Arrays.toString(nextGuess));
-        if(Math.abs(nextGuess[0] - guess[0]) < 1e-3 && Math.abs(nextGuess[1] - guess[1]) < 1e-3 && Math.abs(nextGuess[2] - guess[2]) < 1e-3){
+        if(Math.abs(nextGuess[0] - guess[0]) < tolerance.doubleValue() && Math.abs(nextGuess[1] - guess[1]) < tolerance.doubleValue() && Math.abs(nextGuess[2] - guess[2]) < tolerance.doubleValue()){
+            xyz.add(nextGuess);
             return xyz;
         } else {
             xyz.add(nextGuess);

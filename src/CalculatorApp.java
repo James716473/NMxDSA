@@ -108,6 +108,7 @@ public class CalculatorApp {
         // Left: List of equations
         JList<String> historyList = new JList<>(historyListModel);
         historyList.setFont(new Font("Monospaced", Font.PLAIN, 16));
+        historyList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollList = new JScrollPane(historyList);
         scrollList.setPreferredSize(new Dimension(240, 400));
         panel.add(scrollList, "growy, width 240:240:320");
@@ -133,25 +134,35 @@ public class CalculatorApp {
             if (!e.getValueIsAdjusting()) {
                 String selected = historyList.getSelectedValue();
                 if (selected != null) {
-                    StringBuilder sb = new StringBuilder();
-                    int count = 1;
+                    // Find the most recent solution for this equation
                     for (int i = history.size() - 1; i >= 0; i--) {
                         Tuple<String, String> entry = history.get(i);
                         if (entry.getX().equals(selected)) {
-                            sb.append("Solution #").append(count).append(":\n");
-                            sb.append(entry.getY()).append("\n");
-                            sb.append("-----------------------------\n");
-                            count++;
+                            solutionArea.setText(entry.getY());
+                            break;
                         }
                     }
-                    if (sb.length() == 0) {
-                        solutionArea.setText("");
-                    } else {
-                        solutionArea.setText(sb.toString());
-                    }
+                } else {
+                    solutionArea.setText("");
                 }
             }
         });
+
+        // Add clear history button
+        JButton clearButton = new JButton("Clear History");
+        clearButton.setFont(new Font("Bodoni MT", Font.PLAIN, 14));
+        clearButton.setForeground(Color.WHITE);
+        clearButton.setBackground(new Color(0x7B3742));
+        clearButton.setFocusPainted(false);
+        clearButton.setBorderPainted(false);
+        clearButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        clearButton.addActionListener(e -> {
+            history.clear();
+            historyListModel.clear();
+            solutionArea.setText("");
+        });
+        panel.add(clearButton, "span 2, align right, gaptop 10");
+
         return panel;
     }
 
@@ -1018,11 +1029,11 @@ public class CalculatorApp {
     private JPanel matrixInputPanel() {
         JPanel panel = new JPanel(new MigLayout("wrap 2, insets 20 30 20 20, gapx 10", "[grow][grow]", "[]10[]10[]"));
         panel.setBackground(new Color(0xF7F3F0));
-        JLabel header = new JLabel("Matrix Method");
+        JLabel header = new JLabel("Matrix Multiplication");
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
         panel.add(header, "span 2");
-        JLabel desc = new JLabel("Enter your matrix A and vector B below.");
+        JLabel desc = new JLabel("Enter your matrices A and B below. For 1D arrays, enter values separated by spaces. For 2D matrices, enter each row on a new line with values separated by spaces.");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
         panel.add(desc, "span 2, wrap, gapbottom 10");
 
@@ -1031,7 +1042,7 @@ public class CalculatorApp {
         leftPanel.setBackground(new Color(0xF7F3F0));
 
         // Label and text area for A
-        JLabel labelA = new JLabel("A");
+        JLabel labelA = new JLabel("Matrix A");
         labelA.setFont(new Font("Bodoni MT", Font.BOLD, 18));
         labelA.setHorizontalAlignment(SwingConstants.LEFT);
         leftPanel.add(labelA, "align left, gapbottom 2");
@@ -1044,36 +1055,6 @@ public class CalculatorApp {
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
         ));
         areaA.setBackground(Color.WHITE);
-        // Limit to 3 lines, 20 columns
-        ((javax.swing.text.AbstractDocument) areaA.getDocument()).setDocumentFilter(new javax.swing.text.DocumentFilter() {
-            private final int MAX_COLS = 20;
-            private final int MAX_LINES = 3;
-            @Override
-            public void insertString(FilterBypass fb, int offset, String string, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
-                StringBuilder sb = new StringBuilder(areaA.getText());
-                sb.insert(offset, string);
-                if (allLinesWithinLimit(sb.toString())) {
-                    super.insertString(fb, offset, string, attr);
-                }
-            }
-            @Override
-            public void replace(FilterBypass fb, int offset, int length, String text, javax.swing.text.AttributeSet attrs) throws javax.swing.text.BadLocationException {
-                StringBuilder sb = new StringBuilder(areaA.getText());
-                sb.replace(offset, offset + length, text);
-                if (allLinesWithinLimit(sb.toString())) {
-                    super.replace(fb, offset, length, text, attrs);
-                }
-            }
-            private boolean allLinesWithinLimit(String text) {
-                if (text.isEmpty()) return true;
-                String[] lines = text.split("\\r?\\n", -1);
-                if (lines.length > MAX_LINES) return false;
-                for (String line : lines) {
-                    if (line.length() > MAX_COLS) return false;
-                }
-                return true;
-            }
-        });
         JScrollPane scrollA = new JScrollPane(areaA);
         scrollA.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollA.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
@@ -1084,7 +1065,7 @@ public class CalculatorApp {
         leftPanel.add(scrollA, "gapbottom 10");
 
         // Label and text area for B
-        JLabel labelB = new JLabel("B");
+        JLabel labelB = new JLabel("Matrix B");
         labelB.setFont(new Font("Bodoni MT", Font.BOLD, 18));
         labelB.setHorizontalAlignment(SwingConstants.LEFT);
         leftPanel.add(labelB, "align left, gapbottom 2");
@@ -1097,36 +1078,6 @@ public class CalculatorApp {
             BorderFactory.createEmptyBorder(8, 6, 8, 6)
         ));
         areaB.setBackground(Color.WHITE);
-        // Limit to 3 lines, 20 columns
-        ((javax.swing.text.AbstractDocument) areaB.getDocument()).setDocumentFilter(new javax.swing.text.DocumentFilter() {
-            private final int MAX_COLS = 20;
-            private final int MAX_LINES = 3;
-            @Override
-            public void insertString(FilterBypass fb, int offset, String string, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
-                StringBuilder sb = new StringBuilder(areaB.getText());
-                sb.insert(offset, string);
-                if (allLinesWithinLimit(sb.toString())) {
-                    super.insertString(fb, offset, string, attr);
-                }
-            }
-            @Override
-            public void replace(FilterBypass fb, int offset, int length, String text, javax.swing.text.AttributeSet attrs) throws javax.swing.text.BadLocationException {
-                StringBuilder sb = new StringBuilder(areaB.getText());
-                sb.replace(offset, offset + length, text);
-                if (allLinesWithinLimit(sb.toString())) {
-                    super.replace(fb, offset, length, text, attrs);
-                }
-            }
-            private boolean allLinesWithinLimit(String text) {
-                if (text.isEmpty()) return true;
-                String[] lines = text.split("\\r?\\n", -1);
-                if (lines.length > MAX_LINES) return false;
-                for (String line : lines) {
-                    if (line.length() > MAX_COLS) return false;
-                }
-                return true;
-            }
-        });
         JScrollPane scrollB = new JScrollPane(areaB);
         scrollB.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollB.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
@@ -1136,19 +1087,21 @@ public class CalculatorApp {
         scrollB.getViewport().setOpaque(false);
         leftPanel.add(scrollB, "gapbottom 10");
 
-        // Add tolerance field below matrix/vector input
-        JLabel tolLabel = new JLabel("Tolerance");
-        tolLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
-        JTextField tolField = new JTextField(36);
-        tolField.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
-        leftPanel.add(tolLabel, "align left, gaptop 10");
-        leftPanel.add(tolField, "align left");
+        // Add matrix type selection
+        JLabel typeLabel = new JLabel("Matrix Type");
+        typeLabel.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
+        String[] types = {"1D Arrays", "2D Matrices"};
+        JComboBox<String> typeCombo = new JComboBox<>(types);
+        typeCombo.setFont(new Font("Bodoni MT", Font.PLAIN, 12));
+        typeCombo.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
+        leftPanel.add(typeLabel, "align left, gaptop 10");
+        leftPanel.add(typeCombo, "align left");
         panel.add(leftPanel, "grow");
 
         // Right side - Solution display
         JPanel rightPanel = new JPanel(new MigLayout("fillx, wrap 1, gap 10", "[grow]"));
         rightPanel.setBackground(new Color(0xF7F3F0));
-        JLabel solutionLabel = new JLabel("Solution:");
+        JLabel solutionLabel = new JLabel("Result:");
         solutionLabel.setFont(new Font("Bodoni MT", Font.BOLD, 14));
         rightPanel.add(solutionLabel);
         
@@ -1171,33 +1124,96 @@ public class CalculatorApp {
         JButton calc = calcButton();
         calc.addActionListener(e -> {
             try {
-                // Parse matrix A
-                String[] matrixARows = areaA.getText().split("\\n");
-                double[][] matrixA = new double[matrixARows.length][];
-                for (int i = 0; i < matrixARows.length; i++) {
-                    String[] values = matrixARows[i].trim().split("\\s+");
-                    matrixA[i] = new double[values.length];
-                    for (int j = 0; j < values.length; j++) {
-                        matrixA[i][j] = Double.parseDouble(values[j]);
+                String matrixType = (String) typeCombo.getSelectedItem();
+                solution.setText("");
+
+                if (matrixType.equals("1D Arrays")) {
+                    // Parse 1D arrays
+                    String[] valuesA = areaA.getText().trim().split("\\s+");
+                    String[] valuesB = areaB.getText().trim().split("\\s+");
+                    
+                    int[] arrayA = new int[valuesA.length];
+                    int[] arrayB = new int[valuesB.length];
+                    
+                    for (int i = 0; i < valuesA.length; i++) {
+                        arrayA[i] = Integer.parseInt(valuesA[i]);
                     }
-                }
+                    for (int i = 0; i < valuesB.length; i++) {
+                        arrayB[i] = Integer.parseInt(valuesB[i]);
+                    }
 
-                // Parse vector B
-                String[] vectorBValues = areaB.getText().trim().split("\\s+");
-                double[] vectorB = new double[vectorBValues.length];
-                for (int i = 0; i < vectorBValues.length; i++) {
-                    vectorB[i] = Double.parseDouble(vectorBValues[i]);
-                }
+                    // Perform multiplication
+                    int[][] result = methods.matrixMultiplication(arrayA, arrayB);
+                    
+                    // Display result
+                    solution.append("Result Matrix:\n");
+                    for (int i = 0; i < result.length; i++) {
+                        for (int j = 0; j < result[i].length; j++) {
+                            solution.append(String.format("%6d", result[i][j]));
+                        }
+                        solution.append("\n");
+                    }
 
-                // Solve using matrix method
-                double[][] augmentedMatrix = new double[matrixA.length][matrixA[0].length + 1];
-                // Copy matrix A
-                for (int i = 0; i < matrixA.length; i++) {
-                    System.arraycopy(matrixA[i], 0, augmentedMatrix[i], 0, matrixA[i].length);
-                    // Add vector B as the last column
-                    augmentedMatrix[i][matrixA[i].length] = vectorB[i];
+                    // Add to history
+                    String historyEntry = String.format("Matrix A: [%s] × Matrix B: [%s]", 
+                        String.join(", ", valuesA), 
+                        String.join(", ", valuesB));
+                    historyListModel.insertElementAt(historyEntry, 0);
+                    history.push(new Tuple<>(historyEntry, solution.getText()));
+                } else {
+                    // Parse 2D matrices
+                    String[] matrixARows = areaA.getText().split("\\n");
+                    String[] matrixBRows = areaB.getText().split("\\n");
+                    
+                    int[][] matrixA = new int[matrixARows.length][];
+                    int[][] matrixB = new int[matrixBRows.length][];
+                    
+                    for (int i = 0; i < matrixARows.length; i++) {
+                        String[] values = matrixARows[i].trim().split("\\s+");
+                        matrixA[i] = new int[values.length];
+                        for (int j = 0; j < values.length; j++) {
+                            matrixA[i][j] = Integer.parseInt(values[j]);
+                        }
+                    }
+                    
+                    for (int i = 0; i < matrixBRows.length; i++) {
+                        String[] values = matrixBRows[i].trim().split("\\s+");
+                        matrixB[i] = new int[values.length];
+                        for (int j = 0; j < values.length; j++) {
+                            matrixB[i][j] = Integer.parseInt(values[j]);
+                        }
+                    }
+
+                    // Check if matrices can be multiplied
+                    if (matrixA[0].length != matrixB.length) {
+                        solution.setText("Error: Number of columns in Matrix A must equal number of rows in Matrix B");
+                        return;
+                    }
+
+                    // Perform multiplication
+                    int[][] result = methods.matrixMultiplication(matrixA, matrixB);
+                    
+                    // Display result
+                    solution.append("Result Matrix:\n");
+                    for (int i = 0; i < result.length; i++) {
+                        for (int j = 0; j < result[i].length; j++) {
+                            solution.append(String.format("%6d", result[i][j]));
+                        }
+                        solution.append("\n");
+                    }
+
+                    // Add to history
+                    StringBuilder historyEntry = new StringBuilder("Matrix A:\n");
+                    for (String row : matrixARows) {
+                        historyEntry.append(row).append("\n");
+                    }
+                    historyEntry.append("×\nMatrix B:\n");
+                    for (String row : matrixBRows) {
+                        historyEntry.append(row).append("\n");
+                    }
+                    historyListModel.insertElementAt(historyEntry.toString().trim(), 0);
+                    history.push(new Tuple<>(historyEntry.toString().trim(), solution.getText()));
                 }
-                
                 
             } catch (Exception ex) {
                 solution.setText("Error:\n" + ex.getMessage());

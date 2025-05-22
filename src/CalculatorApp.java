@@ -98,19 +98,59 @@ public class CalculatorApp {
     }
 
     private JPanel historyPanel() {
-        JPanel panel = new JPanel(new MigLayout("fill, insets 40 40 40 40"));
+        JPanel panel = new JPanel(new MigLayout("fill, insets 40 40 40 40", "[grow 30][grow 70]", ""));
         panel.setBackground(new Color(0xF7F3F0));
         JLabel header = new JLabel("History");
         header.setFont(new Font("Bodoni MT", Font.BOLD, 24));
         header.setForeground(new Color(0x6B232C));
-        panel.add(header, "wrap");
+        panel.add(header, "wrap, span 2");
+
+        // Left: List of equations
         JList<String> historyList = new JList<>(historyListModel);
         historyList.setFont(new Font("Monospaced", Font.PLAIN, 16));
-        JScrollPane scroll = new JScrollPane(historyList);
-        scroll.setPreferredSize(new Dimension(800, 400));
-        panel.add(scroll, "growx, growy");
-        
-        
+        JScrollPane scrollList = new JScrollPane(historyList);
+        scrollList.setPreferredSize(new Dimension(240, 400));
+        panel.add(scrollList, "growy, width 240:240:320");
+
+        // Right: Solution display
+        JTextArea solutionArea = new JTextArea();
+        solutionArea.setFont(new Font("Monospaced", Font.PLAIN, 16));
+        solutionArea.setEditable(false);
+        solutionArea.setLineWrap(true);
+        solutionArea.setWrapStyleWord(true);
+        solutionArea.setBorder(BorderFactory.createCompoundBorder(
+            new RoundedBorder(12),
+            BorderFactory.createEmptyBorder(8, 6, 8, 6)
+        ));
+        solutionArea.setBackground(Color.WHITE);
+        JScrollPane scrollSolution = new JScrollPane(solutionArea);
+        scrollSolution.setPreferredSize(new Dimension(600, 400));
+        panel.add(scrollSolution, "grow, pushx, span 1");
+
+        // Show solution when an equation is selected
+        historyList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                String selected = historyList.getSelectedValue();
+                if (selected != null) {
+                    StringBuilder sb = new StringBuilder();
+                    int count = 1;
+                    for (int i = history.size() - 1; i >= 0; i--) {
+                        Tuple<String, String> entry = history.get(i);
+                        if (entry.getX().equals(selected)) {
+                            sb.append("Solution #").append(count).append(":\n");
+                            sb.append(entry.getY()).append("\n");
+                            sb.append("-----------------------------\n");
+                            count++;
+                        }
+                    }
+                    if (sb.length() == 0) {
+                        solutionArea.setText("");
+                    } else {
+                        solutionArea.setText(sb.toString());
+                    }
+                }
+            }
+        });
         return panel;
     }
 

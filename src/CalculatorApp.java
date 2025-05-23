@@ -314,7 +314,7 @@ public class CalculatorApp {
         guess.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
         tol.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
         maxIter.setBorder(BorderFactory.createCompoundBorder(new RoundedBorder(12), BorderFactory.createEmptyBorder(8, 6, 8, 6)));
-        leftPanel.add(labeledField("Function (in form x = g(x))", func), "");
+        leftPanel.add(labeledField("Function (in form g(x))", func), "");
         leftPanel.add(labeledField("Initial Guess", guess), "");
         leftPanel.add(labeledField("Tolerance", tol), "");
         leftPanel.add(labeledField("Max Iterations", maxIter), "");

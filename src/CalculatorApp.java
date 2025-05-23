@@ -299,7 +299,7 @@ public class CalculatorApp {
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
         panel.add(header, "span 2");
-        JLabel desc = new JLabel("This method solves equations of the form x = g(x) by iteratively computing x₁ = g(x₀), x₂ = g(x₁), etc.");
+        JLabel desc = new JLabel("This method solves equations of the form x = g(x) by iteratively computing xn+1 = g(xn). Only use (x) as variable");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
         panel.add(desc, "span 2");
 
@@ -389,7 +389,7 @@ public class CalculatorApp {
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
         panel.add(header, "span 2");
-        JLabel desc = new JLabel("The Newton-Raphson method uses the formula x₁ = x₀ - f(x₀)/f'(x₀) to approximate roots of equations.");
+        JLabel desc = new JLabel("The Newton-Raphson method uses the formula xn+1 = xn - f(xn)/f'(xn) to approximate roots of equations. Only use (x) as variable");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
         panel.add(desc, "span 2");
 
@@ -478,7 +478,7 @@ public class CalculatorApp {
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
         panel.add(header, "span 2");
-        JLabel desc = new JLabel("The secant method uses the formula x₂ = x₁ - f(x₁)(x₁ - x₀)/(f(x₁) - f(x₀)) to approximate roots.");
+        JLabel desc = new JLabel("The secant method uses the formula xn+1 = xn - f(xn)(xn - xn-1)/(f(xn) - f(xn-1)) to approximate roots. Only use variable (X).");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
         panel.add(desc, "span 2");
 
@@ -572,7 +572,7 @@ public class CalculatorApp {
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
         panel.add(header, "span 2");
-        JLabel desc = new JLabel("The bisection method finds a root by repeatedly dividing an interval and selecting the subinterval where the function changes sign.");
+        JLabel desc = new JLabel("The bisection method finds a root by repeatedly dividing an interval and selecting the subinterval where the function changes sign. Use only variable (x).");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
         panel.add(desc, "span 2");
 
@@ -669,7 +669,7 @@ public class CalculatorApp {
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
         panel.add(header, "span 2");
-        JLabel desc = new JLabel("The false position (regula falsi) method uses linear interpolation to find improved approximations to the roots.");
+        JLabel desc = new JLabel("The false position (regula falsi) method uses linear interpolation to find improved approximations to the roots. Use only variable (X).");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
         panel.add(desc, "span 2");
 
@@ -764,7 +764,7 @@ public class CalculatorApp {
         header.setFont(new Font("Bodoni MT", Font.BOLD, 20));
         header.setForeground(new Color(0x6B232C));
         panel.add(header, "span 2");
-        JLabel desc = new JLabel("Input equations as strings, one per line.");
+        JLabel desc = new JLabel("Input equations as strings, one per line. Only use (x), (y), and (z) as variables.");
         desc.setFont(new Font("Bodoni MT", Font.PLAIN, 13));
         panel.add(desc, "span 2");
 
